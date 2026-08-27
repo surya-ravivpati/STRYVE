@@ -4,12 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Wordmark from '../brand/Wordmark'
 import Mark from '../brand/Mark'
 
+// Order matches actual scroll position on the page (#technology sits inside
+// the Science section, so Science must precede it).
 const LINKS = [
   { label: 'Performance', href: '#performance' },
-  { label: 'Technology', href: '#technology' },
   { label: 'Cramp Detection', href: '#cramp' },
-  { label: 'Science', href: '#science' },
   { label: 'About', href: '#about' },
+  { label: 'Science', href: '#science' },
+  { label: 'Technology', href: '#technology' },
 ]
 
 export default function Nav() {
