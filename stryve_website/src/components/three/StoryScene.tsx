@@ -87,10 +87,12 @@ type PartState = {
 function Assembly({
   progress,
   compact,
+  zoom,
   onSensorPhase,
 }: {
   progress: MotionValue<number>
   compact: boolean
+  zoom: number
   onSensorPhase: (v: number) => void
 }) {
   const { scene } = useGLTF(MODEL_URL)
@@ -148,7 +150,7 @@ function Assembly({
       group.current.position.y = Math.sin(state.clock.elapsedTime * 0.6) * 0.025
 
       group.current.position.x = offset
-      const scale = BASE_SCALE * (1 + range(p, 0.85, 1) * 0.06)
+      const scale = BASE_SCALE * zoom * (1 + range(p, 0.85, 1) * 0.06)
       group.current.scale.setScalar(THREE.MathUtils.lerp(group.current.scale.x || scale, scale, 0.08))
     }
 
@@ -172,7 +174,7 @@ function Assembly({
   })
 
   return (
-    <group ref={group} scale={BASE_SCALE}>
+    <group ref={group} scale={BASE_SCALE * zoom}>
       <group ref={inner}>
         <primitive object={model} position={[0, -MODEL_CENTER_Y, 0]} />
       </group>
@@ -183,9 +185,12 @@ function Assembly({
 export default function StoryScene({
   progress,
   className = '',
+  zoom = 1,
 }: {
   progress: MotionValue<number>
   className?: string
+  /** Multiplies the assembly scale — lets tighter containers fill the frame. */
+  zoom?: number
 }) {
   const host = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -226,7 +231,7 @@ export default function StoryScene({
         <spotLight position={[0, 5, 1]} angle={0.6} penumbra={1} intensity={1.0} color="#FFFFFF" />
 
         <Suspense fallback={<Loader />}>
-          <Assembly progress={progress} compact={quality === 'low'} onSensorPhase={() => {}} />
+          <Assembly progress={progress} compact={quality === 'low'} zoom={zoom} onSensorPhase={() => {}} />
           {/* studio reflections built in-scene — no external HDR fetch */}
           <Environment resolution={quality === 'low' ? 128 : 256}>
             <Lightformer form="rect" intensity={4.0} color="#FFFFFF" position={[0, 3, 2]} scale={[7, 3, 1]} rotation={[-Math.PI / 3, 0, 0]} />

@@ -1,3 +1,4 @@
+import { Link, useLocation } from 'react-router-dom'
 import Wordmark from '../brand/Wordmark'
 import Mark from '../brand/Mark'
 
@@ -15,6 +16,8 @@ const LEGAL = [
 ]
 
 export default function Footer() {
+  const { pathname } = useLocation()
+  const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
   return (
     <footer className="relative overflow-hidden border-t border-chalk/[0.09] bg-carbon-950">
       <Mark className="pointer-events-none absolute -right-[3%] -top-[40%] h-[240%] w-auto text-chalk/[0.015]" />
@@ -30,6 +33,9 @@ export default function Footer() {
             <p className="mt-8 font-display text-[15px] uppercase tracking-tight text-chalk">
               Predict. <span className="text-pulse">Prevent.</span> Perform.
             </p>
+            <Link to="/reserve" className="btn-primary lift mt-7 px-5 py-3 text-[10px]">
+              Reserve STRYVE
+            </Link>
           </div>
 
           <div className="md:col-span-4 md:col-start-7">
@@ -37,7 +43,7 @@ export default function Footer() {
             <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
               {NAV.map((n) => (
                 <li key={n.label}>
-                  <a href={n.href} className="text-[13.5px] text-chalk-dim transition-colors hover:text-pulse">
+                  <a href={to(n.href)} className="text-[13.5px] text-chalk-dim transition-colors hover:text-pulse">
                     {n.label}
                   </a>
                 </li>
@@ -50,7 +56,7 @@ export default function Footer() {
             <ul className="mt-5 flex flex-col gap-3">
               {LEGAL.map((n) => (
                 <li key={n.label}>
-                  <a href={n.href} className="text-[13.5px] text-chalk-dim transition-colors hover:text-pulse">
+                  <a href={to(n.href)} className="text-[13.5px] text-chalk-dim transition-colors hover:text-pulse">
                     {n.label}
                   </a>
                 </li>

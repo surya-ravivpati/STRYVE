@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Wordmark from '../brand/Wordmark'
 import Mark from '../brand/Mark'
@@ -14,6 +15,10 @@ const LINKS = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+  const onHome = pathname === '/'
+  // Section anchors only exist on the home route; elsewhere route back to it.
+  const to = (hash: string) => (onHome ? hash : `/${hash}`)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -38,16 +43,16 @@ export default function Nav() {
       }`}
     >
       <nav className="container-x flex h-[68px] items-center justify-between">
-        <a href="#top" className="group flex items-center gap-3" aria-label="STRYVE home">
+        <Link to="/" className="group flex items-center gap-3" aria-label="STRYVE home">
           <Mark className="h-[22px] w-auto text-pulse transition-transform duration-500 group-hover:-translate-y-0.5" />
           <Wordmark className="h-[12px]" />
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-9 lg:flex">
           {LINKS.map((l) => (
             <li key={l.label}>
               <a
-                href={l.href}
+                href={to(l.href)}
                 className="group relative font-mono text-[10px] uppercase tracking-[0.22em] text-chalk-dim transition-colors hover:text-chalk"
               >
                 {l.label}
@@ -58,9 +63,9 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-3">
-          <a href="#join" className="btn-primary lift hidden px-5 py-2.5 text-[10px] sm:inline-flex">
-            Join STRYVE
-          </a>
+          <Link to="/reserve" className="btn-primary lift hidden px-5 py-2.5 text-[10px] sm:inline-flex">
+            Reserve
+          </Link>
           <button
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -93,7 +98,7 @@ export default function Nav() {
                   transition={{ delay: 0.05 + i * 0.05 }}
                 >
                   <a
-                    href={l.href}
+                    href={to(l.href)}
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 border-b border-chalk/[0.06] py-4 font-display text-xl uppercase tracking-tight text-chalk"
                   >
@@ -102,9 +107,9 @@ export default function Nav() {
                   </a>
                 </motion.li>
               ))}
-              <a href="#join" onClick={() => setOpen(false)} className="btn-primary mt-5 w-full py-4">
-                Join STRYVE
-              </a>
+              <Link to="/reserve" onClick={() => setOpen(false)} className="btn-primary mt-5 w-full py-4">
+                Reserve STRYVE
+              </Link>
             </ul>
           </motion.div>
         )}

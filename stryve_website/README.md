@@ -24,9 +24,35 @@ Copy about cramp risk is written to be scientifically responsible: STRYVE
 identifies patterns *associated with* rising risk. It is not presented as a
 medical device and makes no diagnostic, accuracy or clinical-validation claims.
 
+## Routes
+
+| Route      | Page                                                          |
+| ---------- | ------------------------------------------------------------- |
+| `/`        | The product story — hero, 3D scroll story, platform sections. |
+| `/reserve` | Commerce: configurator, pricing, specs, FAQ.                  |
+
+Routing is client-side (`react-router-dom`). Both `vercel.json` files rewrite
+`/(.*)` to `/index.html`, so deep links and refreshes on `/reserve` resolve.
+
+## Commerce
+
+STRYVE is pre-launch, so `/reserve` is built as a **reservation** flow rather
+than an in-stock cart: band size, finish and quantity, a refundable deposit, and
+an explicit statement that pricing is an estimate and no balance is charged
+until it is confirmed.
+
+> **Pricing is a placeholder.** `PRICE_ESTIMATE`, `DEPOSIT` and `CURRENCY` at the
+> top of `src/pages/Reserve.tsx` are marked values, not committed figures — set
+> them before launch. Likewise the specs table deliberately omits battery life,
+> weight, dimensions and ingress rating rather than inventing them.
+
+The reserve form is front-end only; wire it to a real payment provider and order
+store before taking money.
+
 ## Stack
 
 - **React 18** + **TypeScript** + **Vite 6**
+- **React Router** for the two routes
 - **Tailwind CSS** for the design system tokens
 - **three.js / React Three Fiber / drei** for the 3D product
 - **Framer Motion** for scroll-linked motion
@@ -50,6 +76,10 @@ Type: **Archivo** variable — the width axis drives a condensed display voice
 **JetBrains Mono** for technical labels and readouts (`.label`).
 
 ## The scroll-driven 3D story
+
+`StoryScene` is reused in three places — the hero, the pinned story, and the
+reserve page — driven by whatever `MotionValue` the caller passes, with a `zoom`
+prop so tighter containers still fill the frame.
 
 `src/components/sections/ScrollStory.tsx` pins a full-screen canvas across 520vh
 and drives `three/StoryScene.tsx` from a single scroll `MotionValue`. Scroll

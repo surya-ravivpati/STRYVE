@@ -1,19 +1,29 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/layout/Nav'
-import Hero from './components/sections/Hero'
-import ScrollStory from './components/sections/ScrollStory'
+import Home from './pages/Home'
 
-/* Everything past the 3D story is split out so the first screen stays light. */
-const Performance = lazy(() => import('./components/sections/Performance'))
-const CrampFlagship = lazy(() => import('./components/sections/CrampFlagship'))
-const HowItWorks = lazy(() => import('./components/sections/HowItWorks'))
-const Dashboard = lazy(() => import('./components/sections/Dashboard'))
-const AthleticsXTech = lazy(() => import('./components/sections/AthleticsXTech'))
-const Science = lazy(() => import('./components/sections/Science'))
-const Sports = lazy(() => import('./components/sections/Sports'))
-const Ecosystem = lazy(() => import('./components/sections/Ecosystem'))
-const FinalCTA = lazy(() => import('./components/sections/FinalCTA'))
+const Reserve = lazy(() => import('./pages/Reserve'))
 const Footer = lazy(() => import('./components/layout/Footer'))
+
+/**
+ * Restores sane scroll behaviour across route changes: jump to top on a new
+ * route, but honour an anchor when one is present (e.g. /#science).
+ */
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (hash) {
+      const el = document.querySelector(hash)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        return
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [pathname, hash])
+  return null
+}
 
 export default function App() {
   return (
@@ -24,23 +34,20 @@ export default function App() {
       >
         Skip to content
       </a>
+      <ScrollManager />
       <Nav />
       <main>
-        <Hero />
-        <ScrollStory />
-        <Suspense fallback={<div className="h-[50vh] bg-carbon" aria-hidden />}>
-          <Performance />
-          <CrampFlagship />
-          <HowItWorks />
-          <Dashboard />
-          <AthleticsXTech />
-          <Science />
-          <Sports />
-          <Ecosystem />
-          <FinalCTA />
-          <Footer />
+        <Suspense fallback={<div className="h-screen bg-carbon" aria-hidden />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/reserve" element={<Reserve />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
         </Suspense>
       </main>
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   )
 }
