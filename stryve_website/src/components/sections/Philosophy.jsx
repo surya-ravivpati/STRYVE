@@ -8,7 +8,7 @@ const LINES = [
 
 export default function Philosophy() {
   return (
-    <section id="about" className="relative overflow-hidden border-t border-white/[0.06] bg-carbon py-28 md:py-44">
+    <section id="about" className="relative overflow-hidden border-t border-chalk/[0.07] bg-carbon py-28 md:py-44">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-[0.35]" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pulse/[0.07] blur-[150px]" />
       <div className="container-x relative">

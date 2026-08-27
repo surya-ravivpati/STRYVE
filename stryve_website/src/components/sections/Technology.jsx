@@ -67,7 +67,7 @@ export default function Technology() {
   const [active, setActive] = useState('emg')
 
   return (
-    <section id="technology" className="relative border-t border-white/[0.06] bg-carbon py-24 md:py-32">
+    <section id="technology" className="relative border-t border-chalk/[0.07] bg-carbon py-24 md:py-32">
       <div className="container-x">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeader
@@ -96,7 +96,7 @@ export default function Technology() {
                 className={`group relative flex min-h-[240px] flex-col justify-between overflow-hidden border p-6 text-left transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ion ${
                   isActive
                     ? 'border-pulse/40 bg-carbon-700'
-                    : 'border-white/[0.08] bg-carbon-800 hover:border-white/20'
+                    : 'border-chalk/[0.08] bg-carbon-800 hover:border-chalk/25'
                 }`}
               >
                 {/* glow */}
@@ -104,13 +104,13 @@ export default function Technology() {
                   className={`pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full blur-2xl transition-opacity duration-500 ${
                     isActive ? 'opacity-100' : 'opacity-0'
                   }`}
-                  style={{ background: 'radial-gradient(circle, rgba(255,65,39,0.4), transparent 70%)' }}
+                  style={{ background: 'radial-gradient(circle, rgba(255,66,29,0.4), transparent 70%)' }}
                 />
 
                 <div className="relative flex items-center justify-between">
                   <span
                     className={`flex h-11 w-11 items-center justify-center border transition-colors ${
-                      isActive ? 'border-pulse/50 text-pulse' : 'border-white/10 text-ion'
+                      isActive ? 'border-pulse/50 text-pulse' : 'border-chalk/10 text-ion'
                     }`}
                   >
                     <svg viewBox="0 0 24 24" className="h-5 w-5">
@@ -121,7 +121,7 @@ export default function Technology() {
                 </div>
 
                 <div className="relative">
-                  <h3 className="font-display text-lg font-bold uppercase leading-tight tracking-tight text-chalk">
+                  <h3 className="font-display text-lg uppercase leading-tight tracking-tight text-chalk">
                     {c.label}
                   </h3>
                   <AnimatePresence initial={false}>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Reveal from '../ui/Reveal.jsx'
+import Mark from '../brand/Mark.jsx'
 
 export default function CTA() {
   const [email, setEmail] = useState('')
@@ -12,7 +13,7 @@ export default function CTA() {
   }
 
   return (
-    <section id="join" className="relative overflow-hidden border-t border-white/[0.06] bg-carbon py-28 md:py-40">
+    <section id="join" className="relative overflow-hidden border-t border-chalk/[0.07] bg-carbon py-28 md:py-40">
       {/* controlled pulse lighting */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-pulse/[0.12] blur-[150px]" />
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-30" />
@@ -20,7 +21,7 @@ export default function CTA() {
       <div className="container-x relative text-center">
         <Reveal variant="up">
           <span className="eyebrow justify-center">
-            <span className="h-1.5 w-1.5 animate-pulse-glow rounded-full bg-pulse" /> Get STRYVE
+            <Mark className="h-4 w-auto text-pulse" /> Get STRYVE
           </span>
         </Reveal>
 
@@ -61,7 +62,7 @@ export default function CTA() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="flex-1 border border-white/15 bg-carbon-800 px-5 py-3.5 text-sm text-chalk placeholder:text-slate focus:border-pulse focus:outline-none focus:ring-1 focus:ring-pulse"
+                className="flex-1 border border-chalk/20 bg-carbon-800 px-5 py-3.5 text-sm text-chalk placeholder:text-slate focus:border-pulse focus:outline-none focus:ring-1 focus:ring-pulse"
               />
               <button type="submit" className="btn-primary shrink-0">
                 Join STRYVE <span aria-hidden>→</span>

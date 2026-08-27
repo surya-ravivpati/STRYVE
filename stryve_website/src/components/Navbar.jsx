@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Wordmark } from './ui/Wordmark.jsx'
+import Wordmark from './brand/Wordmark.jsx'
+import Mark from './brand/Mark.jsx'
 
 const LINKS = [
   { label: 'Technology', href: '#technology' },
@@ -23,43 +24,39 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
+    return () => { document.body.style.overflow = '' }
   }, [open])
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled || open
-          ? 'border-b border-white/[0.08] bg-carbon/85 backdrop-blur-xl'
+          ? 'border-b border-chalk/[0.08] bg-carbon/90 backdrop-blur-xl'
           : 'border-b border-transparent bg-transparent'
       }`}
     >
-      <nav className="container-x flex h-[68px] items-center justify-between">
-        <a href="#top" className="group flex items-center gap-2.5" aria-label="STRYVE home">
-          <Wordmark className="h-[15px] w-auto text-chalk" />
+      <nav className="container-x flex h-[72px] items-center justify-between">
+        <a href="#top" className="group flex items-center gap-3" aria-label="STRYVE home">
+          <Mark className="h-6 w-auto text-pulse transition-transform duration-500 group-hover:-translate-y-0.5" />
+          <Wordmark className="h-[13px]" />
         </a>
 
-        <ul className="hidden items-center gap-9 lg:flex">
+        <ul className="hidden items-center gap-10 lg:flex">
           {LINKS.map((l) => (
             <li key={l.label}>
               <a
                 href={l.href}
-                className="group relative font-mono text-[11px] uppercase tracking-[0.22em] text-chalk-dim transition-colors hover:text-chalk"
+                className="group relative font-mono text-[10.5px] uppercase tracking-[0.24em] text-chalk-dim transition-colors hover:text-chalk"
               >
                 {l.label}
-                <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-pulse transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-2 left-0 h-px w-0 bg-pulse transition-all duration-300 group-hover:w-full" />
               </a>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#join"
-            className="btn-primary hidden px-5 py-2.5 text-[12px] sm:inline-flex"
-          >
+          <a href="#join" className="btn-primary hidden px-5 py-2.5 text-[11.5px] sm:inline-flex">
             Get STRYVE <span aria-hidden>→</span>
           </a>
           <button
@@ -69,13 +66,9 @@ export default function Navbar() {
             onClick={() => setOpen((v) => !v)}
             className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
           >
-            <span
-              className={`h-[2px] w-6 bg-chalk transition-all duration-300 ${open ? 'translate-y-[7px] rotate-45' : ''}`}
-            />
+            <span className={`h-[2px] w-6 bg-chalk transition-all duration-300 ${open ? 'translate-y-[7px] rotate-45' : ''}`} />
             <span className={`h-[2px] w-6 bg-chalk transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
-            <span
-              className={`h-[2px] w-6 bg-chalk transition-all duration-300 ${open ? '-translate-y-[7px] -rotate-45' : ''}`}
-            />
+            <span className={`h-[2px] w-6 bg-chalk transition-all duration-300 ${open ? '-translate-y-[7px] -rotate-45' : ''}`} />
           </button>
         </div>
       </nav>
@@ -87,7 +80,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-white/[0.06] lg:hidden"
+            className="overflow-hidden border-t border-chalk/[0.06] lg:hidden"
           >
             <ul className="container-x flex flex-col gap-1 py-6">
               {LINKS.map((l, i) => (
@@ -100,8 +93,9 @@ export default function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block py-3 font-display text-2xl font-bold uppercase tracking-tight text-chalk"
+                    className="flex items-center gap-3 py-3 font-display text-2xl uppercase tracking-tight text-chalk"
                   >
+                    <Mark className="h-4 w-auto text-pulse/50" />
                     {l.label}
                   </a>
                 </motion.li>

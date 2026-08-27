@@ -36,7 +36,7 @@ const CASES = [
 
 export default function UseCases() {
   return (
-    <section id="athletes" className="relative border-t border-white/[0.06] bg-carbon-900 py-24 md:py-32">
+    <section id="athletes" className="relative border-t border-chalk/[0.07] bg-carbon-950 py-24 md:py-32">
       <div className="container-x">
         <SectionHeader
           index="/ 05"
@@ -59,23 +59,23 @@ export default function UseCases() {
                 hidden: { opacity: 0, y: 30 },
                 show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
               }}
-              className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden border border-white/[0.08] bg-carbon-800 p-7 transition-all duration-500 hover:border-white/20"
+              className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden border border-chalk/[0.08] bg-carbon-800 p-7 transition-all duration-500 hover:border-chalk/25"
             >
               {/* animated corner accent */}
-              <span className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(120% 80% at 100% 0%, rgba(255,65,39,0.14), transparent 60%)' }} />
+              <span className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(120% 80% at 100% 0%, rgba(255,66,29,0.14), transparent 60%)' }} />
               <span className="pointer-events-none absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 bg-pulse transition-transform duration-500 group-hover:scale-y-100" />
 
               <div className="relative flex items-start justify-between">
-                <span className="font-mono text-6xl font-bold text-white/[0.06] transition-colors duration-500 group-hover:text-white/[0.1]">
+                <span className="font-mono text-6xl font-bold text-chalk/[0.06] transition-colors duration-500 group-hover:text-chalk/[0.1]">
                   0{i + 1}
                 </span>
-                <span className="border border-white/10 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ion">
+                <span className="border border-chalk/10 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ion">
                   {c.stat}
                 </span>
               </div>
 
               <div className="relative">
-                <h3 className="font-display text-2xl font-extrabold uppercase tracking-tight text-chalk">
+                <h3 className="font-display text-2xl uppercase tracking-tight text-chalk">
                   {c.name}
                 </h3>
                 <p className="mt-3 max-w-[280px] text-sm leading-relaxed text-slate-light">{c.desc}</p>

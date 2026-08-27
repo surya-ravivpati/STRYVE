@@ -12,7 +12,7 @@ const STAGES = [
 
 export default function Problem() {
   return (
-    <section id="problem" className="relative border-t border-white/[0.06] bg-carbon py-24 md:py-32">
+    <section id="problem" className="relative border-t border-chalk/[0.07] bg-carbon py-24 md:py-32">
       <div className="container-x">
         <SectionHeader
           index="/ 01"
@@ -68,7 +68,7 @@ export default function Problem() {
                 >
                   <div
                     className={`relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full border ${
-                      isLast ? 'border-pulse/60 bg-pulse/10' : 'border-white/15 bg-carbon-800'
+                      isLast ? 'border-pulse/60 bg-pulse/10' : 'border-chalk/20 bg-carbon-800'
                     }`}
                   >
                     <span
@@ -79,7 +79,7 @@ export default function Problem() {
                     </span>
                   </div>
                   <h3
-                    className={`mt-5 font-display text-sm font-bold uppercase tracking-wide ${
+                    className={`mt-5 font-display text-sm uppercase tracking-wide ${
                       isLast ? 'text-pulse' : 'text-chalk'
                     }`}
                   >
@@ -92,7 +92,7 @@ export default function Problem() {
           </motion.div>
         </div>
 
-        <Reveal variant="up" className="mt-16 border-t border-white/[0.06] pt-8">
+        <Reveal variant="up" className="mt-16 border-t border-chalk/[0.07] pt-8">
           <p className="max-w-2xl font-display text-xl font-semibold leading-snug text-chalk-dim md:text-2xl">
             STRYVE reads the chain in real time — turning invisible physiology into an early,
             <span className="text-chalk"> actionable warning.</span>

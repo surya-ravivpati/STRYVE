@@ -26,7 +26,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="relative border-t border-white/[0.06] bg-carbon-900 py-24 md:py-32">
+    <section id="how" className="relative border-t border-chalk/[0.07] bg-carbon-950 py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" />
       <div className="container-x relative">
         <SectionHeader
@@ -58,7 +58,7 @@ export default function HowItWorks() {
               <defs>
                 <linearGradient id="flowgrad" x1="0" x2="1">
                   <stop offset="0" stopColor="#31E7E0" />
-                  <stop offset="1" stopColor="#FF4127" />
+                  <stop offset="1" stopColor="#FF421D" />
                 </linearGradient>
               </defs>
             </svg>
@@ -80,11 +80,11 @@ export default function HowItWorks() {
                 }}
                 className="group relative"
               >
-                <div className="relative z-10 mb-6 flex h-[76px] w-[76px] items-center justify-center border border-white/10 bg-carbon-800 transition-colors duration-300 group-hover:border-pulse/50">
+                <div className="relative z-10 mb-6 flex h-[76px] w-[76px] items-center justify-center border border-chalk/10 bg-carbon-800 transition-colors duration-300 group-hover:border-pulse/50">
                   <span className="font-mono text-lg font-bold text-pulse">{s.n}</span>
-                  <span className="absolute inset-0 -z-10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(circle, rgba(255,65,39,0.35), transparent 70%)' }} />
+                  <span className="absolute inset-0 -z-10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" style={{ background: 'radial-gradient(circle, rgba(255,66,29,0.35), transparent 70%)' }} />
                 </div>
-                <h3 className="font-display text-2xl font-extrabold uppercase tracking-tight text-chalk">
+                <h3 className="font-display text-2xl uppercase tracking-tight text-chalk">
                   {s.title}
                 </h3>
                 <p className="mt-3 max-w-[240px] text-sm leading-relaxed text-slate-light">{s.desc}</p>

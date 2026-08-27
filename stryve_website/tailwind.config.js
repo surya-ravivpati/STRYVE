@@ -4,53 +4,54 @@ export default {
   theme: {
     extend: {
       colors: {
+        // CARBON — warm graphite black, tuned to sit under cream + pulse
         carbon: {
-          DEFAULT: '#0A0C10',
-          900: '#07080B',
-          800: '#0E1116',
-          700: '#141922',
-          600: '#1B212C',
+          DEFAULT: '#0B0A09',
+          950: '#070605',
+          900: '#0B0A09',
+          800: '#131110',
+          700: '#1B1817',
+          600: '#252120',
+          500: '#312C29',
         },
+        // CHALK — exact value sampled from the STRYVE wordmark
         chalk: {
-          DEFAULT: '#F4F6F5',
-          dim: '#C7CDD2',
+          DEFAULT: '#F2EBE0',
+          dim: '#B8AFA4',
         },
+        // PULSE — exact value sampled from the STRYVE logo mark
         pulse: {
-          DEFAULT: '#FF4127',
-          soft: '#FF6B54',
+          DEFAULT: '#FF421D',
+          soft: '#FF6B4A',
+          deep: '#C72E11',
         },
+        // ION — data / technology accent
         ion: {
           DEFAULT: '#31E7E0',
           soft: '#7DF3EE',
         },
+        // SLATE — warm neutral support
         slate: {
-          DEFAULT: '#7A828C',
-          light: '#9AA2AC',
-          dark: '#3A4049',
+          DEFAULT: '#8A8078',
+          light: '#A79D93',
+          dark: '#3A3532',
         },
       },
       fontFamily: {
-        display: ['"Archivo"', 'system-ui', 'sans-serif'],
-        sans: ['"Archivo"', 'system-ui', 'sans-serif'],
+        display: ['"Archivo Black"', 'Archivo', 'system-ui', 'sans-serif'],
+        sans: ['Archivo', 'system-ui', 'sans-serif'],
         mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
       },
-      letterSpacing: {
-        tightest: '-0.045em',
-      },
-      maxWidth: {
-        content: '1320px',
-      },
+      letterSpacing: { tightest: '-0.04em' },
+      maxWidth: { content: '1340px' },
       keyframes: {
         'pulse-glow': {
           '0%, 100%': { opacity: '0.55' },
           '50%': { opacity: '1' },
         },
-        dash: {
-          to: { strokeDashoffset: '0' },
-        },
-        'signal-flow': {
-          '0%': { strokeDashoffset: '200' },
-          '100%': { strokeDashoffset: '0' },
+        'scan-y': {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(200%)' },
         },
       },
       animation: {

@@ -52,7 +52,7 @@ function LiveGraph() {
         <linearGradient id="graphLine" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#31E7E0" />
           <stop offset="0.8" stopColor="#31E7E0" />
-          <stop offset="1" stopColor="#FF4127" />
+          <stop offset="1" stopColor="#FF421D" />
         </linearGradient>
       </defs>
       {/* grid */}
@@ -61,8 +61,8 @@ function LiveGraph() {
       ))}
       <path d={area} fill="url(#graphFill)" />
       <path d={path} fill="none" stroke="url(#graphLine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={lx} cy={ly} r="4" fill="#FF4127" />
-      <circle cx={lx} cy={ly} r="4" fill="none" stroke="#FF4127" strokeOpacity="0.4" strokeWidth="6">
+      <circle cx={lx} cy={ly} r="4" fill="#FF421D" />
+      <circle cx={lx} cy={ly} r="4" fill="none" stroke="#FF421D" strokeOpacity="0.4" strokeWidth="6">
         <animate attributeName="r" values="4;12;4" dur="1.6s" repeatCount="indefinite" />
         <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.6s" repeatCount="indefinite" />
       </circle>
@@ -77,10 +77,10 @@ function Metric({ label, value, suffix = '', decimals = 0, accent = 'ion' }) {
     <div ref={ref} className="panel flex flex-col justify-between p-5">
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate">{label}</span>
       <div className="mt-4 flex items-baseline gap-1">
-        <span className={`font-display text-3xl font-extrabold tracking-tight ${color}`}>
+        <span className={`font-display text-3xl tracking-tight ${color}`}>
           {decimals ? v.toFixed(decimals) : Math.round(v)}
         </span>
-        <span className="font-display text-sm font-bold text-slate-light">{suffix}</span>
+        <span className="font-display text-sm text-slate-light">{suffix}</span>
       </div>
     </div>
   )
@@ -92,7 +92,7 @@ function Gauge({ value, label }) {
     <div ref={ref} className="panel flex flex-col justify-between p-5">
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate">{label}</span>
       <div className="mt-4">
-        <span className="font-display text-3xl font-extrabold tracking-tight text-chalk">{Math.round(v)}%</span>
+        <span className="font-display text-3xl tracking-tight text-chalk">{Math.round(v)}%</span>
         <div className="mt-3 h-1.5 w-full overflow-hidden bg-carbon-600">
           <motion.div
             initial={{ width: 0 }}
@@ -109,7 +109,7 @@ function Gauge({ value, label }) {
 
 export default function Dashboard() {
   return (
-    <section id="performance" className="relative border-t border-white/[0.06] bg-carbon-900 py-24 md:py-32">
+    <section id="performance" className="relative border-t border-chalk/[0.07] bg-carbon-950 py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-30" />
       <div className="container-x relative">
         <SectionHeader
@@ -124,10 +124,10 @@ export default function Dashboard() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14 overflow-hidden border border-white/[0.08] bg-carbon-800"
+          className="mt-14 overflow-hidden border border-chalk/[0.08] bg-carbon-800"
         >
           {/* window bar */}
-          <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
+          <div className="flex items-center justify-between border-b border-chalk/[0.07] px-5 py-3">
             <div className="flex items-center gap-2.5">
               <span className="h-2 w-2 rounded-full bg-pulse animate-pulse-glow" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate">

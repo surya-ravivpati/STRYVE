@@ -17,15 +17,47 @@ scroll-driven motion, and a live biometric dashboard.
 
 ## Brand system
 
-| Token  | Role                                   | Value     |
-| ------ | -------------------------------------- | --------- |
-| Carbon | Dominant dark surface / backgrounds    | `#0A0C10` |
-| Chalk  | Primary light text                     | `#F4F6F5` |
-| Pulse  | Primary accent — CTAs, energy, glow    | `#FF4127` |
-| Ion    | Secondary accent — data / tech         | `#31E7E0` |
-| Slate  | Neutral — borders, dividers, muted UI  | `#7A828C` |
+Pulse and Chalk are sampled directly from the supplied brand artwork, so the site
+matches the logo and wordmark exactly. Carbon and Slate are warmed to sit under
+that cream-and-orange pairing.
 
-Type: **Archivo** (geometric athletic display + body) · **Space Mono** (data readouts).
+| Token  | Role                                   | Value     | Source              |
+| ------ | -------------------------------------- | --------- | ------------------- |
+| Carbon | Dominant dark surface / backgrounds    | `#0B0A09` | warm graphite black |
+| Chalk  | Primary light text                     | `#F2EBE0` | sampled: wordmark   |
+| Pulse  | Primary accent — CTAs, energy, glow    | `#FF421D` | sampled: logo mark  |
+| Ion    | Secondary accent — data / tech         | `#31E7E0` | data accent         |
+| Slate  | Neutral — borders, dividers, muted UI  | `#8A8078` | warm neutral        |
+
+Type: **Archivo Black** (display, matched to the wordmark's weight) · **Archivo**
+(body) · **Space Mono** (data readouts).
+
+## Brand assets
+
+- `public/brand/word_mark.png` — official wordmark, used verbatim in nav and footer
+- `public/brand/logo.png` — source logo art
+- `src/components/brand/Mark.jsx` — the Y-spike mark traced from `logo.png` to a
+  single SVG path, so it scales crisply and can be recolored or animated. It runs
+  through the site as the section-header glyph, nav mark, and large watermark.
+
+## 3D product
+
+`models/PowerThru_Assembly_Reveal.blend` is the authored source (Blender 5.x).
+Browsers cannot load `.blend`, so it is exported to `public/models/stryve-wearable.glb`
+(763 KB, 8.6k verts) and rendered live with three.js / React Three Fiber in
+`src/components/three/WearableModel.jsx`.
+
+Re-export after editing the .blend:
+
+```bash
+pip install bpy==5.0.1
+python3 scripts/export_model.py
+```
+
+The renderer lights the model in-scene with `<Lightformer>` rigs rather than an
+external HDR, so it has no third-party runtime dependency. Each canvas pauses its
+render loop when scrolled out of view, and the whole three.js bundle is lazily
+loaded so it never blocks first paint.
 
 ## Structure
 

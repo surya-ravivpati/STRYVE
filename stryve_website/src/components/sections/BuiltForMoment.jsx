@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Reveal from '../ui/Reveal.jsx'
+import Mark from '../brand/Mark.jsx'
 
 /* stylized athlete-in-motion silhouette with tracking sensor overlays */
 function AthleteFigure() {
@@ -29,7 +30,7 @@ function AthleteFigure() {
       </g>
       {/* sensor nodes on muscle groups */}
       {[
-        [286, 218, '#FF4127'],
+        [286, 218, '#FF421D'],
         [262, 300, '#31E7E0'],
         [214, 240, '#31E7E0'],
         [300, 150, '#31E7E0'],
@@ -68,14 +69,14 @@ export default function BuiltForMoment() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden border-t border-white/[0.06] bg-carbon py-24 md:py-36"
+      className="relative overflow-hidden border-t border-chalk/[0.07] bg-carbon py-24 md:py-36"
     >
       <div className="pointer-events-none absolute right-[8%] top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-pulse/10 blur-[140px]" />
       <div className="container-x relative grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <div>
           <Reveal variant="up">
             <span className="eyebrow">
-              <span className="h-px w-8 bg-pulse" /> Built for the moment
+              <Mark className="h-3.5 w-auto text-pulse" /> Built for the moment
             </span>
           </Reveal>
           <Reveal variant="up" delay={0.08}>
@@ -97,7 +98,7 @@ export default function BuiltForMoment() {
                 ['Real-time', 'Movement-locked tracking'],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <div className="font-display text-2xl font-extrabold tracking-tight text-chalk">{n}</div>
+                  <div className="font-display text-2xl tracking-tight text-chalk">{n}</div>
                   <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-slate">{l}</div>
                 </div>
               ))}
@@ -111,17 +112,17 @@ export default function BuiltForMoment() {
             {/* overlay readout that drifts with scroll */}
             <motion.div
               style={{ x: xData }}
-              className="absolute right-0 top-6 border border-white/10 bg-carbon-800/80 px-3 py-2 backdrop-blur-md"
+              className="absolute right-0 top-6 border border-chalk/10 bg-carbon-800/80 px-3 py-2 backdrop-blur-md"
             >
               <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-slate">Quad Load</div>
-              <div className="mt-1 font-display text-sm font-bold text-pulse">↑ Rising</div>
+              <div className="mt-1 font-display text-sm text-pulse">↑ Rising</div>
             </motion.div>
             <motion.div
               style={{ x: xData }}
-              className="absolute bottom-10 left-0 border border-white/10 bg-carbon-800/80 px-3 py-2 backdrop-blur-md"
+              className="absolute bottom-10 left-0 border border-chalk/10 bg-carbon-800/80 px-3 py-2 backdrop-blur-md"
             >
               <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-slate">Cadence</div>
-              <div className="mt-1 font-display text-sm font-bold text-ion">178 spm</div>
+              <div className="mt-1 font-display text-sm text-ion">178 spm</div>
             </motion.div>
           </div>
         </motion.div>
