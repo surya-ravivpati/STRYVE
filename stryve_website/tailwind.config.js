@@ -1,61 +1,66 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,jsx}'],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // CARBON — warm graphite black, tuned to sit under cream + pulse
+        /* CARBON — instrument-grade graphite black. Cool-neutral so the warm
+           brand cream and pulse orange read as light *inside* a dark machine. */
         carbon: {
-          DEFAULT: '#0B0A09',
-          950: '#070605',
-          900: '#0B0A09',
-          800: '#131110',
-          700: '#1B1817',
-          600: '#252120',
-          500: '#312C29',
+          DEFAULT: '#0A0B0D',
+          950: '#060708',
+          900: '#0A0B0D',
+          800: '#101216',
+          700: '#171A1F',
+          600: '#20242A',
+          500: '#2B3039',
         },
-        // CHALK — exact value sampled from the STRYVE wordmark
+        /* CHALK — sampled from the STRYVE wordmark */
         chalk: {
           DEFAULT: '#F2EBE0',
-          dim: '#B8AFA4',
+          dim: '#A9AEB5',
         },
-        // PULSE — exact value sampled from the STRYVE logo mark
+        /* PULSE — sampled from the STRYVE logo mark */
         pulse: {
           DEFAULT: '#FF421D',
           soft: '#FF6B4A',
-          deep: '#C72E11',
+          deep: '#C42D0F',
         },
-        // ION — data / technology accent
+        /* ION — controlled data / AI accent. Used sparingly. */
         ion: {
-          DEFAULT: '#31E7E0',
-          soft: '#7DF3EE',
+          DEFAULT: '#3BE0CF',
+          soft: '#7CEFE3',
+          deep: '#189E92',
         },
-        // SLATE — warm neutral support
         slate: {
-          DEFAULT: '#8A8078',
-          light: '#A79D93',
-          dark: '#3A3532',
+          DEFAULT: '#6E757E',
+          light: '#98A0AA',
+          dark: '#333941',
         },
       },
       fontFamily: {
-        display: ['"Archivo Black"', 'Archivo', 'system-ui', 'sans-serif'],
+        /* Archivo variable — width axis drives the condensed display voice */
+        display: ['Archivo', 'system-ui', 'sans-serif'],
         sans: ['Archivo', 'system-ui', 'sans-serif'],
-        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
-      letterSpacing: { tightest: '-0.04em' },
-      maxWidth: { content: '1340px' },
+      letterSpacing: {
+        tightest: '-0.045em',
+        tighter2: '-0.03em',
+      },
+      maxWidth: { content: '1380px' },
       keyframes: {
         'pulse-glow': {
-          '0%, 100%': { opacity: '0.55' },
+          '0%, 100%': { opacity: '0.5' },
           '50%': { opacity: '1' },
         },
-        'scan-y': {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(200%)' },
+        sweep: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(200%)' },
         },
       },
       animation: {
-        'pulse-glow': 'pulse-glow 2.4s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
       },
     },
   },

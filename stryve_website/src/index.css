@@ -3,15 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --carbon: #0b0a09;
-  --carbon-800: #131110;
-  --carbon-700: #1b1817;
+  --carbon: #0a0b0d;
   --chalk: #f2ebe0;
   --pulse: #ff421d;
-  --ion: #31e7e0;
-  --slate: #8a8078;
-  /* the mark's prong angle — the site's signature diagonal */
-  --shear: 14deg;
+  --ion: #3be0cf;
+  --slate: #6e757e;
 }
 
 * {
@@ -21,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--carbon);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -37,6 +34,7 @@ body {
   background-color: var(--carbon);
   color: var(--chalk);
   font-family: Archivo, system-ui, sans-serif;
+  font-variation-settings: 'wdth' 100;
   overflow-x: hidden;
 }
 
@@ -45,69 +43,76 @@ body {
   color: var(--carbon);
 }
 
-::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar { width: 9px; }
 ::-webkit-scrollbar-track { background: var(--carbon); }
-::-webkit-scrollbar-thumb { background: #2b2624; }
-::-webkit-scrollbar-thumb:hover { background: #3a3532; }
+::-webkit-scrollbar-thumb { background: #262b33; }
+::-webkit-scrollbar-thumb:hover { background: #343b45; }
 
 @layer components {
   .container-x {
     @apply mx-auto w-full max-w-content px-6 md:px-10;
   }
 
-  .eyebrow {
-    @apply inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.3em] text-slate;
+  /* Technical label — the site's connective typographic device */
+  .label {
+    @apply font-mono text-[10px] uppercase tracking-[0.3em] text-slate;
   }
 
-  /* Archivo Black is a single weight — tracking does the work */
-  .display-tight {
-    @apply font-display uppercase leading-[0.88] tracking-tightest;
+  /* Display voice: heavy + slightly condensed + tight */
+  .display {
+    @apply font-display uppercase leading-[0.86] tracking-tightest;
+    font-variation-settings: 'wdth' 88;
+    font-weight: 800;
+  }
+
+  /* Editorial voice: normal width, sentence case, for statements */
+  .editorial {
+    @apply font-display leading-[0.95] tracking-tighter2;
+    font-variation-settings: 'wdth' 100;
+    font-weight: 700;
+  }
+
+  .num {
+    @apply font-display tabular-nums leading-none tracking-tightest;
+    font-variation-settings: 'wdth' 92;
+    font-weight: 700;
   }
 
   .btn {
-    @apply relative inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pulse focus-visible:ring-offset-2 focus-visible:ring-offset-carbon;
+    @apply relative inline-flex items-center justify-center gap-2.5 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.18em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pulse focus-visible:ring-offset-2 focus-visible:ring-offset-carbon;
   }
 
   .btn-primary {
-    @apply btn bg-pulse px-7 py-3.5 text-[13px] text-carbon hover:bg-pulse-soft;
+    @apply btn bg-pulse px-7 py-4 font-semibold text-carbon hover:bg-pulse-soft;
   }
   .btn-primary:hover {
-    box-shadow: 0 14px 44px -10px rgba(255, 66, 29, 0.6);
+    box-shadow: 0 16px 46px -12px rgba(255, 66, 29, 0.65);
   }
 
   .btn-ghost {
-    @apply btn border border-chalk/20 px-7 py-3.5 text-[13px] text-chalk hover:border-chalk/50 hover:bg-chalk/[0.04];
+    @apply btn border border-chalk/20 px-7 py-4 text-chalk hover:border-chalk/45 hover:bg-chalk/[0.04];
   }
 
   .panel {
     @apply border border-chalk/[0.09] bg-carbon-800;
   }
 
-  /* corner cut echoing the mark's prong angle */
-  .cut-corner {
-    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
-  }
-  .cut-tr {
-    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  .rule {
+    @apply h-px w-full bg-chalk/[0.09];
   }
 }
 
-.grid-lines {
+/* Fine engineering grid */
+.grid-fine {
   background-image:
-    linear-gradient(to right, rgba(242, 235, 224, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(242, 235, 224, 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
+    linear-gradient(to right, rgba(242, 235, 224, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242, 235, 224, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
 
-/* fine horizontal scan rules — sports-telemetry texture */
-.scanlines {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(242, 235, 224, 0.045) 0px,
-    rgba(242, 235, 224, 0.045) 1px,
-    transparent 1px,
-    transparent 7px
-  );
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.4px rgba(242, 235, 224, 0.3);
 }
 
 .grain::before {
@@ -120,11 +125,10 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.text-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(242, 235, 224, 0.38);
+/* Magnetic-feeling hover for primary actions */
+.lift {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-.glow-pulse {
-  box-shadow: 0 0 70px -12px rgba(255, 66, 29, 0.5), 0 0 140px -40px rgba(255, 66, 29, 0.3);
+.lift:hover {
+  transform: translateY(-2px);
 }

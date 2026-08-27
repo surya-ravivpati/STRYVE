@@ -1,82 +1,92 @@
 # STRYVE
 
-**Predict. Prevent. Perform.**
+**Performance intelligence for athletes.** The flagship product of **PowerThru —
+Athletics × Technology**.
 
-A premium, cinematic marketing site for STRYVE — an intelligent athletic wearable
-that reads muscle fatigue and predicts cramp risk before it happens.
+STRYVE is a performance monitor: it reads physiological and movement signals from
+the working muscle and turns them into a live picture of training intensity,
+muscle activity, fatigue and readiness. Its flagship capability is cramp-risk
+detection — a differentiated feature *inside* the platform, not the whole product.
 
-Built as a modern React single-page experience with a strict brand system,
-scroll-driven motion, and a live biometric dashboard.
+## Positioning
+
+The site is deliberately ordered so performance monitoring lands before cramp
+detection:
+
+```
+Athletics × Technology
+  └─ STRYVE performance monitor
+       └─ multimodal physiological intelligence
+            └─ flagship cramp detection
+```
+
+Copy about cramp risk is written to be scientifically responsible: STRYVE
+identifies patterns *associated with* rising risk. It is not presented as a
+medical device and makes no diagnostic, accuracy or clinical-validation claims.
 
 ## Stack
 
-- **React 18** + **Vite 6**
-- **Tailwind CSS 3** — design tokens for the brand palette
-- **Framer Motion** — scroll reveals, parallax, staggered transitions
-- Pure-SVG product rendering & data visualization (no external image/3D assets)
+- **React 18** + **TypeScript** + **Vite 6**
+- **Tailwind CSS** for the design system tokens
+- **three.js / React Three Fiber / drei** for the 3D product
+- **Framer Motion** for scroll-linked motion
 
-## Brand system
+## Design system
 
-Pulse and Chalk are sampled directly from the supplied brand artwork, so the site
-matches the logo and wordmark exactly. Carbon and Slate are warmed to sit under
-that cream-and-orange pairing.
+Pulse and Chalk are sampled from the supplied brand artwork so the site matches
+the logo and wordmark exactly. Carbon is a cool instrument-grade graphite, chosen
+so the warm cream and orange read as light inside a dark machine.
 
-| Token  | Role                                   | Value     | Source              |
-| ------ | -------------------------------------- | --------- | ------------------- |
-| Carbon | Dominant dark surface / backgrounds    | `#0B0A09` | warm graphite black |
-| Chalk  | Primary light text                     | `#F2EBE0` | sampled: wordmark   |
-| Pulse  | Primary accent — CTAs, energy, glow    | `#FF421D` | sampled: logo mark  |
-| Ion    | Secondary accent — data / tech         | `#31E7E0` | data accent         |
-| Slate  | Neutral — borders, dividers, muted UI  | `#8A8078` | warm neutral        |
+| Token  | Role                                  | Value     | Source             |
+| ------ | ------------------------------------- | --------- | ------------------ |
+| Carbon | Primary background, surfaces          | `#0A0B0D` | graphite black     |
+| Chalk  | Primary text, high contrast           | `#F2EBE0` | sampled: wordmark  |
+| Pulse  | Data, active states, CTAs, risk       | `#FF421D` | sampled: logo mark |
+| Ion    | Secondary data / AI accent, sparingly | `#3BE0CF` | data accent        |
+| Slate  | Secondary text, borders, muted UI     | `#6E757E` | warm-neutral gray  |
 
-Type: **Archivo Black** (display, matched to the wordmark's weight) · **Archivo**
-(body) · **Space Mono** (data readouts).
+Type: **Archivo** variable — the width axis drives a condensed display voice
+(`.display`) against a normal-width editorial voice (`.editorial`) — with
+**JetBrains Mono** for technical labels and readouts (`.label`).
 
-## Brand assets
+## The scroll-driven 3D story
 
-- `public/brand/word_mark.png` — official wordmark, used verbatim in nav and footer
-- `public/brand/logo.png` — source logo art
-- `src/components/brand/Mark.jsx` — the Y-spike mark traced from `logo.png` to a
-  single SVG path, so it scales crisply and can be recolored or animated. It runs
-  through the site as the section-header glyph, nav mark, and large watermark.
+`src/components/sections/ScrollStory.tsx` pins a full-screen canvas across 520vh
+and drives `three/StoryScene.tsx` from a single scroll `MotionValue`. Scroll
+progress controls camera dolly and height, rotation, tilt, and an **exploded
+view** built from the model's real part names — `semg_electrode_pad`,
+`imu_sensor_pod`, `gsr_electrode_pad_a/b`, `temperature_sensor_mount` separate
+further than structural parts, so the sensing system reads as an engineering
+reveal rather than scattered geometry.
 
-## 3D product
+Beats: product → placement → sensors → fusion → performance intelligence.
 
-`models/PowerThru_Assembly_Reveal.blend` is the authored source (Blender 5.x).
-Browsers cannot load `.blend`, so it is exported to `public/models/stryve-wearable.glb`
-(763 KB, 8.6k verts) and rendered live with three.js / React Three Fiber in
-`src/components/three/WearableModel.jsx`.
+## 3D pipeline
 
-Re-export after editing the .blend:
+`models/PowerThru_Assembly_Reveal.blend` (Blender 5.x) is the authored source.
+Browsers cannot load `.blend`, so it is exported to
+`public/models/stryve-wearable.glb` (763 KB, 8.6k verts).
 
 ```bash
 pip install bpy==5.0.1
 python3 scripts/export_model.py
 ```
 
-The renderer lights the model in-scene with `<Lightformer>` rigs rather than an
-external HDR, so it has no third-party runtime dependency. Each canvas pauses its
-render loop when scrolled out of view, and the whole three.js bundle is lazily
-loaded so it never blocks first paint.
+## Performance
 
-## Structure
-
-Reusable components under `src/components`:
-
-- `Navbar` — transparent over hero, transitions to carbon on scroll, mobile menu
-- `sections/` — Hero, Problem, HowItWorks, Technology, Dashboard, BuiltForMoment,
-  UseCases, Philosophy, Product, CTA, Footer
-- `ui/` — `Button`, `Reveal` (scroll animation), `SectionHeader`, `Wordmark`, `Wearable`
-- `hooks/useCountUp` — viewport-triggered number counters
-
-Below-the-fold sections are lazy-loaded for fast first paint. All motion respects
-`prefers-reduced-motion`; interactive elements are keyboard navigable.
+- three.js is a separate lazily-loaded chunk — it never blocks first paint
+- every canvas pauses its render loop when scrolled out of view
+- mobile gets lower DPR, a smaller environment map, no contact shadows, and a
+  pulled-back camera
+- all sections below the story are route-split via `React.lazy`
+- motion respects `prefers-reduced-motion`; the live traces stop entirely
 
 ## Develop
 
 ```bash
 npm install
-npm run dev      # local dev server
-npm run build    # production build -> dist/
-npm run preview  # preview the production build
+npm run dev        # dev server
+npm run typecheck  # tsc --noEmit
+npm run build      # typecheck + production build
+npm run preview    # serve the production build
 ```
