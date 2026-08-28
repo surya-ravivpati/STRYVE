@@ -108,12 +108,12 @@ export default function Hero() {
           >
             <div className="relative mx-auto aspect-square w-full max-w-[400px]">
               <Suspense fallback={<div className="h-full w-full" />}>
-                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.6} />
+                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.42} />
               </Suspense>
 
-              <Chip className="-left-2 top-[14%]" label="Intensity" value="92%" tone="pulse" delay={1.1} />
-              <Chip className="-right-2 top-[46%]" label="Cramp risk" value="Low" tone="ion" delay={1.3} />
-              <Chip className="left-4 bottom-[12%]" label="Readiness" value="88" tone="ion" delay={1.5} />
+              <Chip className="-left-8 top-[6%]" label="Intensity" value="92%" tone="pulse" delay={1.1} />
+              <Chip className="-right-8 top-[50%]" label="Cramp risk" value="Low" tone="ion" delay={1.3} />
+              <Chip className="-left-4 bottom-[6%]" label="Readiness" value="88" tone="ion" delay={1.5} />
             </div>
           </motion.div>
         </div>

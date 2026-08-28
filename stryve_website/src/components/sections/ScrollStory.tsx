@@ -13,25 +13,25 @@ const SCENES = [
     body: 'A single wearable, worn on the working muscle. Lightweight enough to forget, precise enough to matter.',
   },
   {
-    at: [0.23, 0.38],
+    at: [0.22, 0.37],
     label: 'The athlete',
     title: 'Worn where the work happens.',
     body: 'Positioned on the muscle group under load, STRYVE reads the body at the source rather than inferring it from the wrist.',
   },
   {
-    at: [0.43, 0.6],
+    at: [0.41, 0.57],
     label: 'The sensors',
     title: 'Four signals. One surface.',
     body: 'Muscle activity, movement, skin conductivity and temperature — captured together, in the same place, at the same moment.',
   },
   {
-    at: [0.65, 0.8],
+    at: [0.61, 0.77],
     label: 'Sensor fusion',
     title: 'Signals become a picture.',
     body: 'No single metric explains an athlete. STRYVE combines the streams to build a live model of how the body is responding.',
   },
   {
-    at: [0.85, 1.0],
+    at: [0.81, 1.0],
     label: 'Performance intelligence',
     title: 'A clearer read on your limits.',
     body: 'Intensity, fatigue, readiness and rising cramp risk — one continuous picture of what is happening beneath the surface.',
@@ -40,7 +40,7 @@ const SCENES = [
 
 function SceneCopy({ scene, progress }: { scene: (typeof SCENES)[number]; progress: MotionValue<number> }) {
   const [a, b] = scene.at
-  const pad = 0.02
+  const pad = 0.015
   const opacity = useTransform(progress, [a - pad, a + pad, b - pad, b + pad], [0, 1, 1, 0])
   const y = useTransform(progress, [a - pad, a + pad, b - pad, b + pad], [26, 0, 0, -26])
 
