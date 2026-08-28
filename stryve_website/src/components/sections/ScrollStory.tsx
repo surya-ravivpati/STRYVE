@@ -46,7 +46,7 @@ function SceneCopy({ scene, progress }: { scene: (typeof SCENES)[number]; progre
 
   return (
     <motion.div style={{ opacity, y }} className="pointer-events-none absolute inset-x-0 bottom-0 z-20 lg:inset-y-0 lg:right-auto lg:w-[34%]">
-      <div className="flex h-full flex-col justify-end px-6 pb-16 md:px-10 lg:justify-center lg:px-0 lg:pb-0">
+      <div className="flex h-full flex-col justify-end px-6 pb-16 md:px-10 lg:justify-center lg:pb-0">
         <span className="label flex items-center gap-3">
           <span className="h-px w-8 bg-pulse" />
           {scene.label}
@@ -64,7 +64,7 @@ function SensorLegend({ progress }: { progress: MotionValue<number> }) {
   return (
     <motion.ul
       style={{ opacity }}
-      className="pointer-events-none absolute right-0 top-1/2 z-20 hidden w-[300px] -translate-y-1/2 flex-col gap-px lg:flex"
+      className="pointer-events-none absolute right-6 top-1/2 z-20 hidden w-[300px] -translate-y-1/2 flex-col gap-px md:right-10 lg:flex"
     >
       {SENSORS.map((s, i) => (
         <SensorRow key={s.key} index={i} label={s.label} sub={s.sub} progress={progress} />
@@ -106,7 +106,7 @@ export default function ScrollStory() {
   const fuseOpacity = useTransform(scrollYProgress, [0.68, 0.74, 0.86, 0.93], [0, 1, 1, 0])
 
   return (
-    <section ref={ref} id="product" className="relative h-[520vh] bg-carbon">
+    <section ref={ref} id="product" className="relative h-[640vh] bg-carbon">
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0 grid-fine opacity-50" />
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-[46%] bg-gradient-to-r from-carbon via-carbon/85 to-transparent lg:block" />
@@ -115,7 +115,7 @@ export default function ScrollStory() {
 
         {/* 3D stage */}
         <Suspense fallback={<div className="absolute inset-0" />}>
-          <StoryScene progress={scrollYProgress} className="absolute inset-0 h-full w-full" />
+          <StoryScene progress={scrollYProgress} className="absolute inset-0 h-full w-full" effects />
         </Suspense>
 
         {/* narrative overlays */}
@@ -128,7 +128,7 @@ export default function ScrollStory() {
           {/* fusion readout */}
           <motion.div
             style={{ opacity: fuseOpacity }}
-            className="pointer-events-none absolute right-0 top-1/2 z-20 hidden w-[300px] -translate-y-1/2 flex-col gap-2 border border-chalk/[0.09] bg-carbon-800/80 p-5 backdrop-blur-sm lg:flex"
+            className="pointer-events-none absolute right-6 top-1/2 z-20 hidden w-[300px] -translate-y-1/2 flex-col gap-2 border border-chalk/[0.09] bg-carbon-800/80 p-5 backdrop-blur-sm md:right-10 lg:flex"
           >
             <span className="label">Fusion</span>
             {[

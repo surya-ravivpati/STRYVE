@@ -106,14 +106,10 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.35 }}
           >
-            <div className="relative mx-auto aspect-square w-full max-w-[400px]">
+            <div className="relative mx-auto aspect-square w-full max-w-[520px]">
               <Suspense fallback={<div className="h-full w-full" />}>
-                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.42} />
+                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.8} />
               </Suspense>
-
-              <Chip className="-left-8 top-[6%]" label="Intensity" value="92%" tone="pulse" delay={1.1} />
-              <Chip className="-right-8 top-[50%]" label="Cramp risk" value="Low" tone="ion" delay={1.3} />
-              <Chip className="-left-4 bottom-[6%]" label="Readiness" value="88" tone="ion" delay={1.5} />
             </div>
           </motion.div>
         </div>
@@ -148,36 +144,5 @@ export default function Hero() {
         </div>
       </motion.div>
     </section>
-  )
-}
-
-function Chip({
-  className = '',
-  label,
-  value,
-  tone = 'ion',
-  delay = 0,
-}: {
-  className?: string
-  label: string
-  value: string
-  tone?: 'pulse' | 'ion'
-  delay?: number
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay }}
-      className={`absolute z-20 hidden items-center gap-3 border border-chalk/10 bg-carbon-800/85 px-4 py-2.5 backdrop-blur-md sm:flex ${className}`}
-    >
-      <span className={`h-1.5 w-1.5 rounded-full ${tone === 'pulse' ? 'bg-pulse' : 'bg-ion'} animate-pulse-glow`} />
-      <div className="flex flex-col leading-none">
-        <span className="label text-[8px]">{label}</span>
-        <span className={`mt-1.5 num text-[15px] ${tone === 'pulse' ? 'text-pulse' : 'text-chalk'}`}>
-          {value}
-        </span>
-      </div>
-    </motion.div>
   )
 }

@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, Lightformer, ContactShadows, Html, useProgress } from '@react-three/drei'
+import { EffectComposer, DepthOfField, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import type { MotionValue } from 'framer-motion'
 
@@ -49,15 +50,37 @@ const LOGO_HOST: Record<string, string> = {
  *   tilt how far the assembly is tipped so its sensing face reads
  *   roll a few degrees of camera roll through the transitions
  * ------------------------------------------------------------------ */
-type Shot = { t: number; az: number; el: number; dist: number; tgtY: number; tilt: number; roll: number }
+type Shot = {
+  t: number
+  az: number
+  el: number
+  dist: number
+  /** vertical focal length — animating it alongside dist gives a lens change */
+  fov: number
+  /** lateral framing: slides the product off dead-centre, rule-of-thirds style */
+  shift: number
+  tgtY: number
+  tilt: number
+  roll: number
+  /** per-beat exposure, so the set gets darker and brighter with the story */
+  expo: number
+}
 
 const SHOTS: Shot[] = [
-  { t: 0.0, az: -0.5, el: 0.17, dist: 3.62, tgtY: 0.0, tilt: 0.42, roll: 0.0 },
-  { t: 0.2, az: -0.08, el: 0.1, dist: 3.14, tgtY: 0.0, tilt: 0.34, roll: -0.014 },
-  { t: 0.42, az: 0.72, el: 0.05, dist: 2.82, tgtY: -0.04, tilt: 0.56, roll: 0.022 },
-  { t: 0.58, az: 1.24, el: 0.32, dist: 3.02, tgtY: 0.02, tilt: 0.62, roll: 0.0 },
-  { t: 0.76, az: 2.02, el: 0.23, dist: 3.2, tgtY: 0.0, tilt: 0.46, roll: -0.02 },
-  { t: 1.0, az: 2.84, el: 0.15, dist: 3.62, tgtY: 0.0, tilt: 0.38, roll: 0.0 },
+  // distant, long lens — the product held small and still
+  { t: 0.0, az: -0.62, el: 0.3, dist: 4.7, fov: 21, shift: 0.0, tgtY: 0.0, tilt: 0.4, roll: 0.0, expo: 0.9 },
+  // the push begins
+  { t: 0.14, az: -0.18, el: 0.15, dist: 3.35, fov: 25, shift: 0.16, tgtY: 0.0, tilt: 0.34, roll: -0.015, expo: 1.0 },
+  // travelling past the band, lens opening up
+  { t: 0.3, az: 0.52, el: 0.04, dist: 2.35, fov: 33, shift: -0.2, tgtY: -0.03, tilt: 0.3, roll: 0.026, expo: 1.05 },
+  // macro: high over the sensing face as the assembly opens
+  { t: 0.46, az: 1.12, el: 0.6, dist: 1.95, fov: 38, shift: 0.14, tgtY: 0.03, tilt: 0.64, roll: -0.01, expo: 1.14 },
+  // rising away while the parts hang separated
+  { t: 0.62, az: 1.74, el: 0.32, dist: 2.95, fov: 30, shift: -0.14, tgtY: 0.01, tilt: 0.6, roll: 0.018, expo: 1.08 },
+  // reassembly, settling back
+  { t: 0.8, az: 2.42, el: 0.19, dist: 3.7, fov: 25, shift: 0.12, tgtY: 0.0, tilt: 0.44, roll: -0.02, expo: 1.0 },
+  // long lens again, pulled back to a hero frame
+  { t: 1.0, az: 3.15, el: 0.26, dist: 4.5, fov: 21, shift: 0.0, tgtY: 0.0, tilt: 0.38, roll: 0.0, expo: 0.94 },
 ]
 
 const _camDir = new THREE.Vector3()
@@ -78,13 +101,17 @@ function sampleShot(p: number): Omit<Shot, 't'> {
   const a = SHOTS[i]
   const b = SHOTS[i + 1]
   const k = smoothstep(clamp01((p - a.t) / (b.t - a.t)))
+  const mix = (x: number, y: number) => x + (y - x) * k
   return {
-    az: a.az + (b.az - a.az) * k,
-    el: a.el + (b.el - a.el) * k,
-    dist: a.dist + (b.dist - a.dist) * k,
-    tgtY: a.tgtY + (b.tgtY - a.tgtY) * k,
-    tilt: a.tilt + (b.tilt - a.tilt) * k,
-    roll: a.roll + (b.roll - a.roll) * k,
+    az: mix(a.az, b.az),
+    el: mix(a.el, b.el),
+    dist: mix(a.dist, b.dist),
+    fov: mix(a.fov, b.fov),
+    shift: mix(a.shift, b.shift),
+    tgtY: mix(a.tgtY, b.tgtY),
+    tilt: mix(a.tilt, b.tilt),
+    roll: mix(a.roll, b.roll),
+    expo: mix(a.expo, b.expo),
   }
 }
 
@@ -183,21 +210,36 @@ function Stage({
     const cosEl = Math.cos(el)
     desired.current.set(Math.sin(az) * cosEl * dist, Math.sin(el) * dist + shot.tgtY, Math.cos(az) * cosEl * dist)
 
-    const cam = state.camera
+    const cam = state.camera as THREE.PerspectiveCamera
     cam.position.x = THREE.MathUtils.damp(cam.position.x, desired.current.x, 3.2, dt)
     cam.position.y = THREE.MathUtils.damp(cam.position.y, desired.current.y, 3.2, dt)
     cam.position.z = THREE.MathUtils.damp(cam.position.z, desired.current.z, 3.2, dt)
 
+    /* Focal length rides with the move. Pushing in while the lens widens is
+       the dolly-zoom that reads as "cinematic" rather than a plain orbit. */
+    const fov = compact ? shot.fov * 1.08 : shot.fov
+    if (Math.abs(cam.fov - fov) > 0.01) {
+      cam.fov = THREE.MathUtils.damp(cam.fov, fov, 3, dt)
+      cam.updateProjectionMatrix()
+    }
+
+    /* Slide the aim sideways along the camera's own right vector so the
+       product sits off dead-centre — the copy column gets room to breathe. */
+    cam.getWorldDirection(_camDir)
+    _right.crossVectors(_camDir, _worldUp).normalize()
+    const shiftX = THREE.MathUtils.damp(target.current.x, shot.shift * (compact ? 0.35 : 1), 3, dt)
     target.current.set(0, THREE.MathUtils.damp(target.current.y, shot.tgtY, 3, dt), 0)
+    target.current.addScaledVector(_right, shiftX)
     cam.lookAt(target.current)
     cam.rotateZ(shot.roll)
+
+    // exposure shifts the mood beat to beat
+    state.gl.toneMappingExposure = THREE.MathUtils.damp(state.gl.toneMappingExposure, shot.expo, 2.4, dt)
 
     /* The key rides with the camera — as on a real set, the crew moves the
        key with the dolly so the subject never falls into silhouette. It is
        offset up and to the right, and breathes slightly for a live highlight. */
     if (keyLight.current) {
-      cam.getWorldDirection(_camDir)
-      _right.crossVectors(_camDir, _worldUp).normalize()
       const swing = Math.sin(t * 0.3) * 0.7
       keyLight.current.position
         .copy(cam.position)
@@ -256,11 +298,19 @@ export default function StoryScene({
   progress,
   className = '',
   zoom = 1,
+  effects = false,
 }: {
   progress: MotionValue<number>
   className?: string
   /** Multiplies the assembly scale — lets tighter containers fill the frame. */
   zoom?: number
+  /**
+   * Depth of field and bloom. The composer cannot preserve a transparent
+   * clear, so this also switches the canvas to an opaque carbon background —
+   * invisible on the full-bleed story canvas, but it would occlude the page
+   * glow behind a boxed mount, so hero and reserve stay on alpha.
+   */
+  effects?: boolean
 }) {
   const host = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -292,12 +342,13 @@ export default function StoryScene({
       <Canvas
         frameloop={visible ? 'always' : 'never'}
         dpr={quality === 'low' ? [1, 1.4] : [1, 1.9]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        gl={{ antialias: true, alpha: !effects, powerPreference: 'high-performance' }}
         camera={{ position: [0, 0.6, 3.6], fov: 28 }}
         onCreated={({ gl }) => {
           gl.toneMappingExposure = 1.06
         }}
       >
+        {effects && <color attach="background" args={['#0A0B0D']} />}
         {/* atmospheric falloff gives the dark set some depth */}
         <fog attach="fog" args={['#0A0B0D', 5.2, 11]} />
 
@@ -314,6 +365,16 @@ export default function StoryScene({
             <ContactShadows position={[0, -0.72, 0]} opacity={0.5} scale={5} blur={2.8} far={2} color="#000000" />
           )}
         </Suspense>
+
+        {/* Real optics, desktop only: the product sits in focus while the set
+            falls away, and the brand mark and specular edges carry a little
+            bloom. This is the difference between a viewer and a camera. */}
+        {effects && quality === 'high' && (
+          <EffectComposer multisampling={0} enableNormalPass={false}>
+            <DepthOfField target={[0, 0, 0]} focalLength={0.28} focusRange={0.35} bokehScale={2.4} height={340} />
+            <Bloom intensity={0.6} luminanceThreshold={0.72} luminanceSmoothing={0.32} mipmapBlur height={220} />
+          </EffectComposer>
+        )}
       </Canvas>
 
       {/* lens vignette — keeps the eye on the product */}
