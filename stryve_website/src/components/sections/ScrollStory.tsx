@@ -115,7 +115,7 @@ export default function ScrollStory() {
 
         {/* 3D stage */}
         <Suspense fallback={<div className="absolute inset-0" />}>
-          <StoryScene progress={scrollYProgress} className="absolute inset-0 h-full w-full" effects />
+          <StoryScene progress={scrollYProgress} className="absolute inset-0 h-full w-full" />
         </Suspense>
 
         {/* narrative overlays */}

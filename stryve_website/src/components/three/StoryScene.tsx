@@ -1,7 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, Lightformer, ContactShadows, Html, useProgress } from '@react-three/drei'
-import { EffectComposer, DepthOfField, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import type { MotionValue } from 'framer-motion'
 
@@ -298,19 +297,11 @@ export default function StoryScene({
   progress,
   className = '',
   zoom = 1,
-  effects = false,
 }: {
   progress: MotionValue<number>
   className?: string
   /** Multiplies the assembly scale — lets tighter containers fill the frame. */
   zoom?: number
-  /**
-   * Depth of field and bloom. The composer cannot preserve a transparent
-   * clear, so this also switches the canvas to an opaque carbon background —
-   * invisible on the full-bleed story canvas, but it would occlude the page
-   * glow behind a boxed mount, so hero and reserve stay on alpha.
-   */
-  effects?: boolean
 }) {
   const host = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -341,21 +332,20 @@ export default function StoryScene({
     <div ref={host} className={className}>
       <Canvas
         frameloop={visible ? 'always' : 'never'}
-        dpr={quality === 'low' ? [1, 1.4] : [1, 1.9]}
-        gl={{ antialias: true, alpha: !effects, powerPreference: 'high-performance' }}
+        dpr={quality === 'low' ? [1, 2] : [1, 2.5]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         camera={{ position: [0, 0.6, 3.6], fov: 28 }}
         onCreated={({ gl }) => {
           gl.toneMappingExposure = 1.06
         }}
       >
-        {effects && <color attach="background" args={['#0A0B0D']} />}
         {/* atmospheric falloff gives the dark set some depth */}
         <fog attach="fog" args={['#0A0B0D', 5.2, 11]} />
 
         <Suspense fallback={<Loader />}>
           <Stage progress={progress} compact={quality === 'low'} zoom={zoom} />
           {/* studio environment built in-scene: reflections with no external HDR */}
-          <Environment resolution={quality === 'low' ? 128 : 256}>
+          <Environment resolution={quality === 'low' ? 256 : 512}>
             <Lightformer form="rect" intensity={4.2} color="#FFFFFF" position={[0, 3, 2]} scale={[7, 3, 1]} rotation={[-Math.PI / 3, 0, 0]} />
             <Lightformer form="rect" intensity={0.35} color="#3BE0CF" position={[-4, 0.5, -2]} scale={[4, 4, 1]} rotation={[0, Math.PI / 2.4, 0]} />
             <Lightformer form="rect" intensity={0.95} color="#FF421D" position={[4, -1, 1]} scale={[4, 3, 1]} rotation={[0, -Math.PI / 2.6, 0]} />
@@ -366,15 +356,6 @@ export default function StoryScene({
           )}
         </Suspense>
 
-        {/* Real optics, desktop only: the product sits in focus while the set
-            falls away, and the brand mark and specular edges carry a little
-            bloom. This is the difference between a viewer and a camera. */}
-        {effects && quality === 'high' && (
-          <EffectComposer multisampling={0} enableNormalPass={false}>
-            <DepthOfField target={[0, 0, 0]} focalLength={0.28} focusRange={0.35} bokehScale={2.4} height={340} />
-            <Bloom intensity={0.6} luminanceThreshold={0.72} luminanceSmoothing={0.32} mipmapBlur height={220} />
-          </EffectComposer>
-        )}
       </Canvas>
 
       {/* lens vignette — keeps the eye on the product */}
