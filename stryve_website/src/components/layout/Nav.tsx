@@ -45,9 +45,13 @@ export default function Nav() {
       }`}
     >
       <nav className="container-x flex h-[68px] items-center justify-between">
-        <Link to="/" className="group flex items-center gap-3" aria-label="STRYVE home">
-          <Mark className="h-[22px] w-auto text-pulse transition-transform duration-500 group-hover:-translate-y-0.5" />
-          <Wordmark className="h-[12px]" />
+        <Link to="/" className="group flex items-center gap-3" aria-label="PowerThru STRYVE — home">
+          <Mark className="h-[20px] w-auto text-chalk transition-transform duration-500 group-hover:translate-x-0.5" />
+          <Wordmark className="h-[9px] sm:h-[10px]" />
+          <span aria-hidden className="hidden h-3 w-px bg-chalk/20 sm:block" />
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.3em] text-chalk-dim sm:block">
+            STRYVE
+          </span>
         </Link>
 
         <ul className="hidden items-center gap-9 lg:flex">
@@ -104,7 +108,7 @@ export default function Nav() {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 border-b border-chalk/[0.06] py-4 font-display text-xl uppercase tracking-tight text-chalk"
                   >
-                    <Mark className="h-3.5 w-auto text-pulse/60" />
+                    <Mark className="h-3.5 w-auto text-chalk/60" />
                     {l.label}
                   </a>
                 </motion.li>

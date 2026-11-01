@@ -22,7 +22,7 @@ export default function SectionHead({
     <div className={`${centred ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'} ${className}`}>
       <Reveal>
         <div className={`flex items-center gap-3.5 ${centred ? 'justify-center' : ''}`}>
-          <Mark className="h-3 w-auto text-pulse" />
+          <Mark className="h-3 w-auto text-chalk" />
           {index && <span className="font-mono text-[10px] text-pulse">{index}</span>}
           <span className="label">{label}</span>
           <span className="h-px w-12 bg-chalk/15" />

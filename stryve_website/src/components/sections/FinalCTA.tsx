@@ -30,7 +30,7 @@ export default function FinalCTA() {
       <div className="container-x relative grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
         <div>
           <div className="flex items-center gap-3">
-            <Mark className="h-3.5 w-auto text-pulse" />
+            <Mark className="h-3.5 w-auto text-chalk" />
             <span className="label">Join STRYVE</span>
           </div>
 

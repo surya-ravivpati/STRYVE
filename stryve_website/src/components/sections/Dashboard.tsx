@@ -41,7 +41,7 @@ function LiveTrace() {
         <linearGradient id="traceLine" x1="0" x2="1">
           <stop offset="0" stopColor="#3BE0CF" />
           <stop offset="0.82" stopColor="#3BE0CF" />
-          <stop offset="1" stopColor="#FF421D" />
+          <stop offset="1" stopColor="#0B6CFF" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((g) => (
@@ -49,8 +49,8 @@ function LiveTrace() {
       ))}
       <path d={`${d} L${W},${H} L0,${H} Z`} fill="url(#traceFill)" />
       <path d={d} fill="none" stroke="url(#traceLine)" strokeWidth="1.8" strokeLinejoin="round" />
-      <circle cx={lx} cy={ly} r="3" fill="#FF421D" />
-      <circle cx={lx} cy={ly} r="3" fill="none" stroke="#FF421D" strokeOpacity="0.4" strokeWidth="5">
+      <circle cx={lx} cy={ly} r="3" fill="#0B6CFF" />
+      <circle cx={lx} cy={ly} r="3" fill="none" stroke="#0B6CFF" strokeOpacity="0.4" strokeWidth="5">
         <animate attributeName="r" values="3;11;3" dur="1.7s" repeatCount="indefinite" />
         <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.7s" repeatCount="indefinite" />
       </circle>

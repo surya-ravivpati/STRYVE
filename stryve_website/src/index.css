@@ -5,7 +5,7 @@
 :root {
   --carbon: #0a0b0d;
   --chalk: #f2ebe0;
-  --pulse: #ff421d;
+  --pulse: #0b6cff;
   --ion: #3be0cf;
   --slate: #6e757e;
 }
@@ -40,7 +40,7 @@ body {
 
 ::selection {
   background: var(--pulse);
-  color: var(--carbon);
+  color: #fff;
 }
 
 ::-webkit-scrollbar { width: 9px; }
@@ -83,10 +83,10 @@ body {
   }
 
   .btn-primary {
-    @apply btn bg-pulse px-7 py-4 font-semibold text-carbon hover:bg-pulse-soft;
+    @apply btn bg-pulse px-7 py-4 font-semibold text-white hover:bg-pulse-soft;
   }
   .btn-primary:hover {
-    box-shadow: 0 16px 46px -12px rgba(255, 66, 29, 0.65);
+    box-shadow: 0 16px 46px -12px rgba(11, 108, 255, 0.6);
   }
 
   .btn-ghost {

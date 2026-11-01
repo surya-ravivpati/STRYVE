@@ -4,8 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* CARBON — instrument-grade graphite black. Cool-neutral so the warm
-           brand cream and pulse orange read as light *inside* a dark machine. */
+        /* CARBON — instrument-grade graphite black, matched to the PowerThru
+           mark. Cool-neutral so chalk and PowerThru blue read as light
+           *inside* a dark machine. */
         carbon: {
           DEFAULT: '#0A0B0D',
           950: '#060708',
@@ -15,16 +16,17 @@ export default {
           600: '#20242A',
           500: '#2B3039',
         },
-        /* CHALK — sampled from the STRYVE wordmark */
+        /* CHALK — light type and the PowerThru mark/wordmark on dark */
         chalk: {
           DEFAULT: '#F2EBE0',
           dim: '#A9AEB5',
         },
-        /* PULSE — sampled from the STRYVE logo mark */
+        /* PULSE — PowerThru blue, sampled from the drive-bar in the mark.
+           The single brand accent: CTAs, the mark, live signal. */
         pulse: {
-          DEFAULT: '#FF421D',
-          soft: '#FF6B4A',
-          deep: '#C42D0F',
+          DEFAULT: '#0B6CFF',
+          soft: '#3D8BFF',
+          deep: '#0052CC',
         },
         /* ION — controlled data / AI accent. Used sparingly. */
         ion: {

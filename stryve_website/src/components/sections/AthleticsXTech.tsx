@@ -19,7 +19,7 @@ export default function AthleticsXTech() {
             variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.7 } } }}
             className="mb-10 flex justify-center"
           >
-            <Mark className="h-12 w-auto text-pulse" />
+            <Mark className="h-12 w-auto text-chalk" />
           </motion.div>
 
           <div className="overflow-hidden">

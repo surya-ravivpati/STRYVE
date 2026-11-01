@@ -23,7 +23,7 @@ const BANDS = [
 const FINISHES = [
   { id: 'carbon', name: 'Carbon', swatch: '#15181C', ring: '#2B3039' },
   { id: 'chalk', name: 'Chalk', swatch: '#D8D2C7', ring: '#F2EBE0' },
-  { id: 'pulse', name: 'Pulse', swatch: '#C42D0F', ring: '#FF421D' },
+  { id: 'drive', name: 'Drive Blue', swatch: '#0052CC', ring: '#0B6CFF' },
 ] as const
 
 const INCLUDED = [
@@ -128,7 +128,7 @@ export default function Reserve() {
           {/* configurator */}
           <div>
             <div className="flex items-center gap-3">
-              <Mark className="h-3 w-auto text-pulse" />
+              <Mark className="h-3 w-auto text-chalk" />
               <span className="label">Reserve · First production run</span>
             </div>
 
@@ -290,7 +290,7 @@ export default function Reserve() {
               <ul className="mt-4 border-t border-chalk/[0.09]">
                 {INCLUDED.map(([t, d]) => (
                   <li key={t} className="flex gap-5 border-b border-chalk/[0.09] py-4">
-                    <Mark className="mt-1 h-3 w-auto shrink-0 text-pulse" />
+                    <Mark className="mt-1 h-3 w-auto shrink-0 text-chalk" />
                     <div>
                       <div className="text-[14px] font-semibold text-chalk">{t}</div>
                       <div className="mt-1 text-[13px] leading-[1.6] text-chalk-dim">{d}</div>

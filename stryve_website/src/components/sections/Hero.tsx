@@ -42,7 +42,7 @@ export default function Hero() {
   return (
     <section id="top" ref={ref} className="grain relative flex min-h-[100svh] flex-col overflow-hidden pt-[68px]">
       <div className="absolute inset-0 grid-fine opacity-60" />
-      <Mark className="pointer-events-none absolute -right-[14%] -top-[10%] h-[130%] w-auto text-chalk/[0.02]" />
+      <Mark mono className="pointer-events-none absolute -right-[14%] -top-[10%] h-[130%] w-auto text-chalk/[0.02]" />
       <div className="pointer-events-none absolute -left-[10%] top-1/4 h-[520px] w-[520px] rounded-full bg-pulse/[0.09] blur-[160px]" />
       <div className="pointer-events-none absolute right-[4%] top-1/3 h-[460px] w-[460px] rounded-full bg-pulse/[0.1] blur-[150px]" />
 
@@ -51,7 +51,7 @@ export default function Hero() {
         <motion.div style={{ y, opacity }} variants={container} initial="hidden" animate="show">
           <motion.div variants={item} className="mb-7 flex items-center gap-3">
             <span className="label flex items-center gap-2.5 text-chalk-dim">
-              <Mark className="h-3 w-auto text-pulse" />
+              <Mark className="h-3 w-auto text-chalk" />
               PowerThru — Athletics × Technology
             </span>
           </motion.div>

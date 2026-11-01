@@ -1,13 +1,13 @@
 import Mark from './Mark'
 
 /**
- * Official STRYVE wordmark artwork — used verbatim rather than approximated
- * with a webfont.
+ * Official POWERTHRU wordmark artwork (recoloured to chalk for the dark
+ * site) — used verbatim rather than approximated with a webfont.
  */
 export default function Wordmark({
-  className = 'h-4',
+  className = 'h-3',
   withMark = false,
-  markClassName = 'h-5 w-auto',
+  markClassName = 'h-6 w-auto',
 }: {
   className?: string
   withMark?: boolean
@@ -15,10 +15,10 @@ export default function Wordmark({
 }) {
   return (
     <span className="inline-flex items-center gap-3">
-      {withMark && <Mark className={`${markClassName} text-pulse`} />}
+      {withMark && <Mark className={`${markClassName} text-chalk`} />}
       <img
-        src="/brand/word_mark.png"
-        alt="STRYVE"
+        src="/brand/powerthru-wordmark.png"
+        alt="PowerThru"
         className={`${className} w-auto select-none`}
         draggable={false}
       />

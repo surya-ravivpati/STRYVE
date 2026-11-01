@@ -1,14 +1,20 @@
 /**
- * STRYVE mark — the Y-spike, traced from the source logo art to a single path
- * so it stays crisp at any size and can be recoloured or animated.
+ * PowerThru mark — the forward "P": an arrow-shaped bowl with the blue
+ * drive-bar running through it. Traced from the official artwork to two
+ * paths so it stays crisp at any size.
+ *
+ * The bowl takes `currentColor` (chalk on the dark site), the bar always takes
+ * PowerThru blue. Pass `mono` for one-colour use (watermarks, tiny sizes).
  */
-export const MARK_VIEWBOX = '0 0 100 106.09'
-export const MARK_PATH =
-  'M58.24,106.09 L41.04,106.09 L40.14,105.56 L39.78,94.44 L40.50,87.63 L40.50,71.15 L24.73,52.15 L0.00,23.84 L0.00,23.12 L1.25,22.22 L11.65,28.67 L26.34,38.71 L42.83,51.25 L43.37,50.72 L44.09,43.19 L44.80,41.40 L44.80,37.10 L45.52,35.30 L45.52,31.36 L46.24,29.21 L46.24,24.55 L46.95,22.76 L48.39,5.56 L49.10,0.90 L50.36,0.00 L51.25,0.90 L51.25,4.48 L51.97,6.27 L52.69,15.95 L53.41,18.46 L53.41,23.12 L54.12,25.27 L54.12,28.14 L54.84,29.57 L55.56,40.68 L56.27,41.76 L56.27,46.77 L57.17,50.90 L88.71,28.67 L98.75,22.22 L100.00,22.40 L100.00,24.19 L75.27,52.15 L63.08,66.49 L59.50,71.51 L59.14,72.58 L59.86,82.97 L59.86,105.56 L58.24,106.09 Z'
+export const MARK_VIEWBOX = '120 580 1770 946'
+export const MARK_BODY =
+  'M498 585L1478 585Q1520 585 1552 612L1858 878Q1885 905 1885 940Q1885 975 1858 1000L1552 1263Q1520 1290 1478 1290L770 1290Q725 1290 698 1318L562 1490Q535 1522 492 1522L268 1522Q245 1522 258 1500L518 1158Q548 1110 600 1110L1330 1110Q1362 1110 1392 1090L1552 970Q1568 955 1568 940Q1568 925 1552 912L1395 795Q1362 770 1320 770L678 770Q640 770 618 748L488 615Q478 600 498 585Z'
+export const MARK_BAR =
+  'M140 922L258 860Q270 855 285 855L1322 855Q1335 855 1345 862L1442 925Q1455 940 1442 955L1345 1016Q1335 1022 1322 1022L285 1022Q270 1022 258 1016L140 958Q122 940 140 922Z'
 
-type Props = React.SVGProps<SVGSVGElement> & { title?: string }
+type Props = React.SVGProps<SVGSVGElement> & { title?: string; mono?: boolean }
 
-export default function Mark({ className = '', title, ...rest }: Props) {
+export default function Mark({ className = '', title, mono = false, ...rest }: Props) {
   return (
     <svg
       viewBox={MARK_VIEWBOX}
@@ -20,7 +26,8 @@ export default function Mark({ className = '', title, ...rest }: Props) {
       {...rest}
     >
       {title && <title>{title}</title>}
-      <path d={MARK_PATH} />
+      <path d={MARK_BODY} />
+      <path d={MARK_BAR} fill={mono ? 'currentColor' : 'var(--pulse)'} />
     </svg>
   )
 }

@@ -59,15 +59,22 @@ store before taking money.
 
 ## Design system
 
-Pulse and Chalk are sampled from the supplied brand artwork so the site matches
-the logo and wordmark exactly. Carbon is a cool instrument-grade graphite, chosen
-so the warm cream and orange read as light inside a dark machine.
+The identity is PowerThru's: the forward "P" mark (an arrow-shaped bowl with a
+blue drive-bar through it) and the POWERTHRU wordmark. Pulse is PowerThru blue,
+sampled from the drive-bar. Carbon is a cool instrument-grade graphite, so chalk
+and blue read as light inside a dark machine.
+
+- `src/components/brand/Mark.tsx` — the mark traced to SVG. The bowl uses
+  `currentColor`; the bar is always PowerThru blue (pass `mono` for one colour).
+- `public/brand/powerthru-wordmark.png` — official wordmark recoloured to chalk
+  (`-dark.png` is the carbon version for light backgrounds).
+- `brand-source/` — the original artwork as supplied.
 
 | Token  | Role                                  | Value     | Source             |
 | ------ | ------------------------------------- | --------- | ------------------ |
 | Carbon | Primary background, surfaces          | `#0A0B0D` | graphite black     |
-| Chalk  | Primary text, high contrast           | `#F2EBE0` | sampled: wordmark  |
-| Pulse  | Data, active states, CTAs, risk       | `#FF421D` | sampled: logo mark |
+| Chalk  | Primary text, mark & wordmark on dark | `#F2EBE0` | light neutral      |
+| Pulse  | PowerThru blue — CTAs, mark, signal   | `#0B6CFF` | sampled: drive-bar |
 | Ion    | Secondary data / AI accent, sparingly | `#3BE0CF` | data accent        |
 | Slate  | Secondary text, borders, muted UI     | `#6E757E` | warm-neutral gray  |
 

@@ -35,12 +35,12 @@ export default function Wearable({ className = '', animate = true }) {
           <stop offset="1" stopColor="#12161D" />
         </linearGradient>
         <radialGradient id="pulseGlow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#FF4127" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#FF4127" stopOpacity="0" />
+          <stop offset="0" stopColor="#0B6CFF" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#0B6CFF" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#31E7E0" />
-          <stop offset="1" stopColor="#FF4127" />
+          <stop offset="1" stopColor="#0B6CFF" />
         </linearGradient>
         <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="7" />
@@ -114,7 +114,7 @@ export default function Wearable({ className = '', animate = true }) {
         {[0, 1, 2, 3, 4].map((i) => (
           <g key={i}>
             <circle cx={172 + i * 44} cy="352" r="12" fill="#0B0E13" stroke="#3A4250" strokeWidth="1.5" />
-            <circle cx={172 + i * 44} cy="352" r="5" fill="#FF4127">
+            <circle cx={172 + i * 44} cy="352" r="5" fill="#0B6CFF">
               {animate && (
                 <animate
                   attributeName="opacity"

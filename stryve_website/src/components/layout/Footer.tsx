@@ -20,11 +20,11 @@ export default function Footer() {
   const to = (hash: string) => (pathname === '/' ? hash : `/${hash}`)
   return (
     <footer className="relative overflow-hidden border-t border-chalk/[0.09] bg-carbon-950">
-      <Mark className="pointer-events-none absolute -right-[3%] -top-[40%] h-[240%] w-auto text-chalk/[0.015]" />
+      <Mark mono className="pointer-events-none absolute -right-[3%] -top-[40%] h-[240%] w-auto text-chalk/[0.015]" />
       <div className="container-x relative py-16 md:py-20">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Wordmark className="h-[17px]" withMark markClassName="h-7 w-auto" />
+            <Wordmark className="h-[13px]" withMark markClassName="h-7 w-auto" />
             <p className="label mt-5">Athletics × Technology</p>
             <p className="mt-6 max-w-xs text-[13.5px] leading-[1.75] text-slate-light">
               STRYVE is the flagship product of PowerThru — performance intelligence for athletes who

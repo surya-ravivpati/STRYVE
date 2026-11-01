@@ -172,8 +172,8 @@ function Stage({
         mat.envMapIntensity = 0.95
         // Lift the brand mark so it reads as printed colour, not dark plastic.
         if (/Logo/i.test(mat.name)) {
-          mat.color.setHex(0xff421d)
-          mat.emissive = new THREE.Color(0xff421d)
+          mat.color.setHex(0x0b6cff)
+          mat.emissive = new THREE.Color(0x0b6cff)
           mat.emissiveIntensity = 0.32
           mat.roughness = 0.45
         }
@@ -283,7 +283,7 @@ function Stage({
       <ambientLight intensity={0.58} />
       <directionalLight ref={keyLight} position={[3, 4, 3]} intensity={2.5} color="#FFFFFF" />
       <directionalLight ref={rimLight} position={[-3, 1.2, -2]} intensity={0.7} color="#3BE0CF" />
-      <directionalLight position={[-1.5, -1.2, 1.5]} intensity={0.5} color="#FF421D" />
+      <directionalLight position={[-1.5, -1.2, 1.5]} intensity={0.5} color="#0B6CFF" />
       <spotLight position={[0, 5, 1]} angle={0.6} penumbra={1} intensity={0.9} color="#FFFFFF" />
 
       <group ref={group} scale={BASE_SCALE * zoom}>
@@ -348,7 +348,7 @@ export default function StoryScene({
           <Environment resolution={quality === 'low' ? 256 : 512}>
             <Lightformer form="rect" intensity={4.2} color="#FFFFFF" position={[0, 3, 2]} scale={[7, 3, 1]} rotation={[-Math.PI / 3, 0, 0]} />
             <Lightformer form="rect" intensity={0.35} color="#3BE0CF" position={[-4, 0.5, -2]} scale={[4, 4, 1]} rotation={[0, Math.PI / 2.4, 0]} />
-            <Lightformer form="rect" intensity={0.95} color="#FF421D" position={[4, -1, 1]} scale={[4, 3, 1]} rotation={[0, -Math.PI / 2.6, 0]} />
+            <Lightformer form="rect" intensity={0.95} color="#0B6CFF" position={[4, -1, 1]} scale={[4, 3, 1]} rotation={[0, -Math.PI / 2.6, 0]} />
             <Lightformer form="ring" intensity={1.6} color="#FFFFFF" position={[0, -2, 3]} scale={3} />
           </Environment>
           {quality === 'high' && (

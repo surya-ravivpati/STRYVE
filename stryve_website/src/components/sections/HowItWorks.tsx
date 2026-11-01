@@ -51,7 +51,7 @@ export default function HowItWorks() {
               <defs>
                 <linearGradient id="flow" x1="0" x2="1">
                   <stop offset="0" stopColor="#3BE0CF" />
-                  <stop offset="1" stopColor="#FF421D" />
+                  <stop offset="1" stopColor="#0B6CFF" />
                 </linearGradient>
               </defs>
             </svg>
