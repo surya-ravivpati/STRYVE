@@ -14,10 +14,13 @@ const PRICE_ESTIMATE = 279
 const DEPOSIT = 40
 const CURRENCY = 'USD'
 
-const BANDS = [
-  { id: 'thigh', name: 'Quad / hamstring', detail: 'Fits 42–72 cm' },
-  { id: 'calf', name: 'Calf', detail: 'Fits 30–50 cm' },
-  { id: 'forearm', name: 'Forearm', detail: 'Fits 22–38 cm' },
+/* Sleeve sizes. Measurements are deliberately not listed — the final sizing
+   chart is sent with confirmed pricing before any balance is charged. */
+const SIZES = [
+  { id: 's', name: 'S', detail: 'Chart at confirmation' },
+  { id: 'm', name: 'M', detail: 'Chart at confirmation' },
+  { id: 'l', name: 'L', detail: 'Chart at confirmation' },
+  { id: 'xl', name: 'XL', detail: 'Chart at confirmation' },
 ] as const
 
 const FINISHES = [
@@ -27,21 +30,22 @@ const FINISHES = [
 ] as const
 
 const INCLUDED = [
-  ['STRYVE module', 'The sensing unit — sEMG, IMU, GSR and thermal.'],
-  ['Performance band', 'Elastic strap, alloy buckle, in your chosen size.'],
-  ['Charging dock', 'Magnetic contact dock with USB-C cable.'],
+  ['STRYVE module', 'The sensing unit — sEMG, IMU, GSR and thermal. Clips into the sleeve cradle.'],
+  ['PowerThru sleeve', 'Ribbed compression knit with skin-side electrodes, in your chosen size.'],
+  ['USB-C cable', 'Charges the module directly through its USB-C port.'],
   ['STRYVE app', 'iOS and Android, included with every unit.'],
 ]
 
 const SPECS: [string, string][] = [
   ['Sensing', 'sEMG, inertial, skin conductivity, skin temperature'],
-  ['Placement', 'Worn on the working muscle group'],
-  ['Feedback', 'Haptic prompt and status indicator'],
+  ['Placement', 'Arm compression sleeve, module seated over the forearm muscle'],
+  ['Electrodes', 'Skin-side sEMG pair with reference, plus GSR pair'],
+  ['Feedback', 'Haptic prompt and light-bar status indicator'],
   ['Connectivity', 'Bluetooth Low Energy'],
-  ['Power', 'Rechargeable, magnetic dock'],
+  ['Power', 'Rechargeable via USB-C'],
   ['Processing', 'Real-time on-device signal handling'],
   ['App', 'iOS and Android'],
-  ['Materials', 'Anodised aluminium lid, elastic band, alloy buckle'],
+  ['Construction', 'Ribbed compression knit, ventilated panel, gripper and wrist cuff'],
 ]
 
 const FAQ = [
@@ -58,8 +62,8 @@ const FAQ = [
     a: 'No. STRYVE is a performance product. It surfaces patterns and trends in physiological signal to help you train with better information. It does not diagnose, treat, or guarantee any outcome.',
   },
   {
-    q: 'Where is the band worn?',
-    a: 'On the working muscle group rather than the wrist — quad, hamstring, calf or forearm depending on your sport. Reading the muscle directly is what makes muscle activity and cramp-risk signals available at all.',
+    q: 'How is STRYVE worn?',
+    a: 'As a compression sleeve on the arm, with the electrodes held against the skin over the working muscle and the module seated on the outside. Reading the muscle directly is what makes muscle activity and cramp-risk signals available at all.',
   },
   {
     q: 'Do I need a subscription?',
@@ -72,7 +76,7 @@ function Money({ value, className = '' }: { value: number; className?: string })
 }
 
 export default function Reserve() {
-  const [band, setBand] = useState<string>(BANDS[0].id)
+  const [size, setSize] = useState<string>(SIZES[1].id)
   const [finish, setFinish] = useState<string>(FINISHES[0].id)
   const [qty, setQty] = useState(1)
   const [email, setEmail] = useState('')
@@ -90,7 +94,7 @@ export default function Reserve() {
     if (email.trim()) setDone(true)
   }
 
-  const selectedBand = BANDS.find((b) => b.id === band)!
+  const selectedSize = SIZES.find((b) => b.id === size)!
   const selectedFinish = FINISHES.find((f) => f.id === finish)!
 
   return (
@@ -105,7 +109,7 @@ export default function Reserve() {
           <div className="lg:sticky lg:top-[92px] lg:self-start">
             <div className="relative aspect-square w-full overflow-hidden border border-chalk/[0.09] bg-carbon-800">
               <Suspense fallback={<div className="h-full w-full" />}>
-                <StoryScene progress={pose} className="h-full w-full" zoom={1.45} />
+                <StoryScene progress={pose} className="h-full w-full" zoom={0.95} />
               </Suspense>
               <span className="absolute left-5 top-5 label">STRYVE — {selectedFinish.name}</span>
               <span className="absolute bottom-5 left-5 label text-slate">Live render · rotating</span>
@@ -161,17 +165,17 @@ export default function Reserve() {
               balance is taken.
             </p>
 
-            {/* band */}
+            {/* size */}
             <fieldset className="mt-10">
-              <legend className="label">Band — worn on</legend>
-              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                {BANDS.map((b) => {
-                  const on = b.id === band
+              <legend className="label">Sleeve size</legend>
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {SIZES.map((b) => {
+                  const on = b.id === size
                   return (
                     <button
                       key={b.id}
                       type="button"
-                      onClick={() => setBand(b.id)}
+                      onClick={() => setSize(b.id)}
                       aria-pressed={on}
                       className={`border px-4 py-4 text-left transition-colors duration-250 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pulse ${
                         on
@@ -250,7 +254,7 @@ export default function Reserve() {
                     <span className="label text-ion">Reservation held</span>
                   </span>
                   <p className="text-[14px] leading-[1.7] text-chalk">
-                    {qty} × STRYVE · {selectedBand.name} · {selectedFinish.name}
+                    {qty} × STRYVE · Size {selectedSize.name} · {selectedFinish.name}
                   </p>
                   <p className="text-[13px] leading-[1.7] text-slate-light">
                     We've sent confirmation to <span className="text-chalk">{email}</span>. Nothing has
@@ -311,7 +315,7 @@ export default function Reserve() {
           </Reveal>
           <Reveal delay={0.07}>
             <h2 className="editorial mt-5 max-w-2xl text-[clamp(1.7rem,3.6vw,2.6rem)]">
-              What's inside the band.
+              What's in the sleeve.
             </h2>
           </Reveal>
 

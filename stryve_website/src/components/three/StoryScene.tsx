@@ -4,12 +4,15 @@ import { useGLTF, Environment, Lightformer, ContactShadows, Html, useProgress } 
 import * as THREE from 'three'
 import type { MotionValue } from 'framer-motion'
 
-const MODEL_URL = '/models/stryve-wearable.glb'
+const MODEL_URL = '/models/powerthru-sleeve.glb'
+/** Draco decoder, self-hosted from three/examples/jsm/libs/draco/gltf. */
+const DRACO_PATH = '/draco/'
 
-/* Authored in metres (157mm across), Y-up after export. Bbox centre sits at
-   y = -0.0574, so the assembly is lifted back to the origin before scaling. */
-const MODEL_CENTER_Y = -0.0574
-const BASE_SCALE = 5.0
+/* Authored in metres (the sleeve is 360mm long), Y-up after export, with its
+   long axis on Z. It is re-centred from its bounding box at load and turned a
+   quarter so the sleeve runs across the frame with the module on top. */
+const BASE_SCALE = 3.2
+const QUARTER_TURN = Math.PI / 2
 
 /** The four sensing systems, keyed to real mesh names inside the GLB. */
 export type SensorKey = 'semg' | 'imu' | 'gsr' | 'temp'
@@ -19,23 +22,30 @@ export const SENSORS: {
   label: string
   sub: string
   meshes: string[]
-  anchor: [number, number, number]
 }[] = [
-  { key: 'semg', label: 'Muscle', sub: 'sEMG', meshes: ['semg_electrode_pad'], anchor: [0.068, -0.039, 0] },
-  { key: 'imu', label: 'Movement', sub: 'IMU', meshes: ['imu_sensor_pod'], anchor: [-0.068, -0.039, 0] },
-  { key: 'gsr', label: 'Sweat', sub: 'GSR', meshes: ['gsr_electrode_pad_a', 'gsr_electrode_pad_b'], anchor: [-0.07, -0.088, 0] },
-  { key: 'temp', label: 'Temperature', sub: 'Skin temp', meshes: ['temperature_sensor_mount'], anchor: [0.071, -0.074, 0] },
+  { key: 'semg', label: 'Muscle', sub: 'sEMG', meshes: ['PTS_sEMG_A', 'PTS_sEMG_B', 'PTS_Ref'] },
+  { key: 'imu', label: 'Movement', sub: 'IMU', meshes: ['PTS_Module'] },
+  { key: 'gsr', label: 'Sweat', sub: 'GSR', meshes: ['PTS_GSR_A', 'PTS_GSR_B'] },
+  { key: 'temp', label: 'Temperature', sub: 'Skin temp', meshes: ['PTS_Module'] },
 ]
 
-const SENSOR_MESHES = new Set(SENSORS.flatMap((s) => s.meshes))
-
-/** Branding geometry rides with the part it is printed on, so the wordmark
-    never detaches from the body or strap during the exploded view. */
-const LOGO_HOST: Record<string, string> = {
-  VIZ_Logo_Wrap_Strap: 'wearable_strap',
-  VIZ_Logo_Wrap_Body: 'main_enclosure_base',
-  VIZ_Logo_Decal: 'main_enclosure_lid',
+/* The teardown: the sensing stack lifts off the sleeve in layers, in the
+   order it is built — skin-side electrodes lowest, then the cradle, then the
+   module with everything printed on or set into it. Values are metres of
+   lift in model space. */
+const MODULE_PARTS = ['PTS_Module', 'PTS_LightBar', 'PTS_Logo_Mark', 'PTS_Logo_Bar', 'PTS_USBC_Cavity', 'PTS_USBC_Tongue']
+const LIFT: Record<string, number> = {
+  ...Object.fromEntries(MODULE_PARTS.map((n) => [n, 0.062])),
+  PTS_Cradle: 0.034,
+  PTS_sEMG_A: 0.016,
+  PTS_sEMG_B: 0.016,
+  PTS_Ref: 0.016,
+  PTS_GSR_A: 0.016,
+  PTS_GSR_B: 0.016,
 }
+
+/** Soft goods: given a fabric sheen so the near-black knit reads on a dark set. */
+const FABRIC = /Knit|Mesh_Carbon|Obsidian/
 
 /* ------------------------------------------------------------------ *
  * Camera choreography.
@@ -63,23 +73,25 @@ type Shot = {
   roll: number
   /** per-beat exposure, so the set gets darker and brighter with the story */
   expo: number
+  /** where the lens is aimed: 0 = the whole sleeve, 1 = the sensor module */
+  focus: number
 }
 
 const SHOTS: Shot[] = [
-  // distant, long lens — the product held small and still
-  { t: 0.0, az: -0.62, el: 0.3, dist: 4.7, fov: 21, shift: 0.0, tgtY: 0.0, tilt: 0.4, roll: 0.0, expo: 0.9 },
-  // the push begins
-  { t: 0.14, az: -0.18, el: 0.15, dist: 3.35, fov: 25, shift: 0.16, tgtY: 0.0, tilt: 0.34, roll: -0.015, expo: 1.0 },
-  // travelling past the band, lens opening up
-  { t: 0.3, az: 0.52, el: 0.04, dist: 2.35, fov: 33, shift: -0.2, tgtY: -0.03, tilt: 0.3, roll: 0.026, expo: 1.05 },
-  // macro: high over the sensing face as the assembly opens
-  { t: 0.46, az: 1.12, el: 0.6, dist: 1.95, fov: 38, shift: 0.14, tgtY: 0.03, tilt: 0.64, roll: -0.01, expo: 1.14 },
-  // rising away while the parts hang separated
-  { t: 0.62, az: 1.74, el: 0.32, dist: 2.95, fov: 30, shift: -0.14, tgtY: 0.01, tilt: 0.6, roll: 0.018, expo: 1.08 },
+  // distant, long lens — the whole sleeve held still across the frame
+  { t: 0.0, az: -0.5, el: 0.3, dist: 4.6, fov: 22, shift: 0.0, tgtY: 0.0, tilt: 0.36, roll: 0.0, expo: 0.92, focus: 0.0 },
+  // the push begins, drifting toward the module
+  { t: 0.14, az: -0.16, el: 0.16, dist: 3.4, fov: 26, shift: 0.16, tgtY: 0.0, tilt: 0.32, roll: -0.015, expo: 1.0, focus: 0.3 },
+  // a low tracking pass along the knit, lens opening up
+  { t: 0.3, az: 0.46, el: 0.05, dist: 2.3, fov: 33, shift: -0.18, tgtY: -0.02, tilt: 0.3, roll: 0.026, expo: 1.06, focus: 0.55 },
+  // macro: high over the module as the sensing stack lifts away
+  { t: 0.46, az: 0.98, el: 0.62, dist: 1.5, fov: 37, shift: 0.12, tgtY: 0.04, tilt: 0.58, roll: -0.01, expo: 1.14, focus: 1.0 },
+  // rising away while the layers hang separated
+  { t: 0.62, az: 1.28, el: 0.4, dist: 2.35, fov: 30, shift: -0.14, tgtY: 0.03, tilt: 0.52, roll: 0.018, expo: 1.08, focus: 0.75 },
   // reassembly, settling back
-  { t: 0.8, az: 2.42, el: 0.19, dist: 3.7, fov: 25, shift: 0.12, tgtY: 0.0, tilt: 0.44, roll: -0.02, expo: 1.0 },
+  { t: 0.8, az: 2.36, el: 0.2, dist: 3.5, fov: 25, shift: 0.12, tgtY: 0.0, tilt: 0.42, roll: -0.02, expo: 1.0, focus: 0.3 },
   // long lens again, pulled back to a hero frame
-  { t: 1.0, az: 3.15, el: 0.26, dist: 4.5, fov: 21, shift: 0.0, tgtY: 0.0, tilt: 0.38, roll: 0.0, expo: 0.94 },
+  { t: 1.0, az: 3.12, el: 0.26, dist: 4.4, fov: 22, shift: 0.0, tgtY: 0.0, tilt: 0.36, roll: 0.0, expo: 0.95, focus: 0.0 },
 ]
 
 const _camDir = new THREE.Vector3()
@@ -111,6 +123,7 @@ function sampleShot(p: number): Omit<Shot, 't'> {
     tilt: mix(a.tilt, b.tilt),
     roll: mix(a.roll, b.roll),
     expo: mix(a.expo, b.expo),
+    focus: mix(a.focus, b.focus),
   }
 }
 
@@ -128,7 +141,9 @@ function Loader() {
   )
 }
 
-type PartState = { mesh: THREE.Object3D; home: THREE.Vector3; dir: THREE.Vector3 }
+type PartState = { mesh: THREE.Object3D; home: THREE.Vector3; lift: number }
+
+const _focusWorld = new THREE.Vector3()
 
 function Stage({
   progress,
@@ -139,26 +154,26 @@ function Stage({
   compact: boolean
   zoom: number
 }) {
-  const { scene } = useGLTF(MODEL_URL)
+  const { scene } = useGLTF(MODEL_URL, DRACO_PATH)
   const group = useRef<THREE.Group>(null)
   const keyLight = useRef<THREE.DirectionalLight>(null)
   const rimLight = useRef<THREE.DirectionalLight>(null)
 
-  const { model, parts } = useMemo(() => {
+  const { model, parts, offset, moduleCentre } = useMemo(() => {
     const c = scene.clone(true)
-    const centre = new THREE.Vector3(0, MODEL_CENTER_Y, 0)
 
-    // First pass: every mesh's outward direction from the assembly centre.
-    const dirs = new Map<string, THREE.Vector3>()
+    // Centre the assembly on its own bounds, so the orbit pivots on the product.
+    const box = new THREE.Box3().setFromObject(c)
+    const offset = box.getCenter(new THREE.Vector3()).negate()
+
+    // Where the module sits, so the lens can be pulled onto it for close-ups.
+    const moduleBox = new THREE.Box3()
     c.traverse((o) => {
-      const m = o as THREE.Mesh
-      if (!m.isMesh) return
-      const world = new THREE.Vector3()
-      m.getWorldPosition(world)
-      const d = world.clone().sub(centre)
-      if (d.lengthSq() < 1e-6) d.set(0, 1, 0)
-      dirs.set(m.name, d.normalize())
+      if (MODULE_PARTS.includes(o.name)) moduleBox.expandByObject(o)
     })
+    const moduleCentre = moduleBox.isEmpty()
+      ? new THREE.Vector3()
+      : moduleBox.getCenter(new THREE.Vector3()).add(offset).applyAxisAngle(_worldUp, QUARTER_TURN)
 
     const parts: PartState[] = []
     c.traverse((o) => {
@@ -166,28 +181,33 @@ function Stage({
       if (!m.isMesh) return
       m.castShadow = true
       m.receiveShadow = true
-      if (m.material) {
-        m.material = (m.material as THREE.Material).clone()
-        const mat = m.material as THREE.MeshStandardMaterial
-        mat.envMapIntensity = 0.95
-        // Lift the brand mark so it reads as printed colour, not dark plastic.
-        if (/Logo/i.test(mat.name)) {
-          mat.color.setHex(0x0b6cff)
-          mat.emissive = new THREE.Color(0x0b6cff)
-          mat.emissiveIntensity = 0.32
-          mat.roughness = 0.45
+      const src = m.material as THREE.MeshStandardMaterial
+      if (src) {
+        let mat: THREE.MeshStandardMaterial
+        if (FABRIC.test(src.name)) {
+          // Knit, mesh and rubber trims: a cloth sheen picks out the weave and
+          // gives the silhouette a soft edge glow instead of a black hole.
+          // Copy the standard props across, then restore the physical defines
+          // that MeshStandardMaterial.copy overwrites (sheen needs them).
+          const fab = new THREE.MeshPhysicalMaterial()
+          THREE.MeshStandardMaterial.prototype.copy.call(fab, src)
+          fab.defines = { STANDARD: '', PHYSICAL: '' }
+          fab.color.multiplyScalar(3.2)
+          fab.sheen = 1
+          fab.sheenRoughness = 0.42
+          fab.sheenColor = new THREE.Color('#6E757E')
+          fab.side = THREE.DoubleSide
+          mat = fab
+        } else {
+          mat = src.clone()
         }
+        mat.envMapIntensity = 0.95
+        m.material = mat
       }
-
-      // Branding inherits the travel of the part it is printed on.
-      const host = LOGO_HOST[m.name]
-      const dir = (host ? dirs.get(host) : dirs.get(m.name))!.clone()
-      const travels = host ? SENSOR_MESHES.has(host) : SENSOR_MESHES.has(m.name)
-      dir.multiplyScalar(travels ? 0.078 : 0.02)
-
-      parts.push({ mesh: m, home: m.position.clone(), dir })
+      const lift = LIFT[m.name] ?? 0
+      parts.push({ mesh: m, home: m.position.clone(), lift })
     })
-    return { model: c, parts }
+    return { model: c, parts, offset, moduleCentre }
   }, [scene])
 
   const target = useRef(new THREE.Vector3())
@@ -199,11 +219,13 @@ function Stage({
     const dt = Math.min(delta, 0.1)
     const shot = sampleShot(p)
 
-    /* A slow continuous drift keeps the frame alive even where the scroll
-       value is parked (hero, reserve) — the shot still leads the movement. */
-    const az = shot.az + t * 0.055
+    /* A slow, bounded sway keeps the frame alive even where the scroll value
+       is parked (hero, reserve). It must stay bounded: an open-ended drift
+       accumulates with time on the page and eventually swings the camera
+       round to look straight down the sleeve. */
+    const az = shot.az + Math.sin(t * 0.16) * 0.26
     const el = shot.el + Math.sin(t * 0.35) * 0.018
-    const dist = (shot.dist + Math.sin(t * 0.23) * 0.03) * (compact ? 1.5 : 1)
+    const dist = (shot.dist + Math.sin(t * 0.23) * 0.03) * (compact ? 1.22 : 1)
 
     // Spherical orbit around the product.
     const cosEl = Math.cos(el)
@@ -226,9 +248,17 @@ function Stage({
        product sits off dead-centre — the copy column gets room to breathe. */
     cam.getWorldDirection(_camDir)
     _right.crossVectors(_camDir, _worldUp).normalize()
-    const shiftX = THREE.MathUtils.damp(target.current.x, shot.shift * (compact ? 0.35 : 1), 3, dt)
-    target.current.set(0, THREE.MathUtils.damp(target.current.y, shot.tgtY, 3, dt), 0)
-    target.current.addScaledVector(_right, shiftX)
+    // Aim point: the whole sleeve, the module, or somewhere on the way between.
+    _focusWorld.set(0, 0, 0)
+    if (group.current) {
+      _focusWorld.copy(moduleCentre).applyMatrix4(group.current.matrixWorld)
+      _focusWorld.multiplyScalar(shot.focus)
+    }
+    _focusWorld.y += shot.tgtY
+    _focusWorld.addScaledVector(_right, shot.shift * (compact ? 0.35 : 1))
+    target.current.x = THREE.MathUtils.damp(target.current.x, _focusWorld.x, 3, dt)
+    target.current.y = THREE.MathUtils.damp(target.current.y, _focusWorld.y, 3, dt)
+    target.current.z = THREE.MathUtils.damp(target.current.z, _focusWorld.z, 3, dt)
     cam.lookAt(target.current)
     cam.rotateZ(shot.roll)
 
@@ -270,11 +300,7 @@ function Stage({
     const back = range(p, 0.74, 0.88)
     const eased = smoothstep(out * (1 - back))
     for (const part of parts) {
-      part.mesh.position.set(
-        part.home.x + part.dir.x * eased,
-        part.home.y + part.dir.y * eased,
-        part.home.z + part.dir.z * eased,
-      )
+      if (part.lift) part.mesh.position.y = part.home.y + part.lift * eased
     }
   })
 
@@ -287,7 +313,10 @@ function Stage({
       <spotLight position={[0, 5, 1]} angle={0.6} penumbra={1} intensity={0.9} color="#FFFFFF" />
 
       <group ref={group} scale={BASE_SCALE * zoom}>
-        <primitive object={model} position={[0, -MODEL_CENTER_Y, 0]} />
+        {/* a quarter turn lays the sleeve across the frame, module on top */}
+        <group rotation={[0, QUARTER_TURN, 0]}>
+          <primitive object={model} position={offset} />
+        </group>
       </group>
     </>
   )
@@ -352,7 +381,7 @@ export default function StoryScene({
             <Lightformer form="ring" intensity={1.6} color="#FFFFFF" position={[0, -2, 3]} scale={3} />
           </Environment>
           {quality === 'high' && (
-            <ContactShadows position={[0, -0.72, 0]} opacity={0.5} scale={5} blur={2.8} far={2} color="#000000" />
+            <ContactShadows position={[0, -0.5, 0]} opacity={0.5} scale={5} blur={2.8} far={2} color="#000000" />
           )}
         </Suspense>
 
@@ -367,4 +396,4 @@ export default function StoryScene({
   )
 }
 
-useGLTF.preload(MODEL_URL)
+useGLTF.preload(MODEL_URL, DRACO_PATH)

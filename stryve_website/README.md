@@ -88,21 +88,25 @@ Type: **Archivo** variable — the width axis drives a condensed display voice
 reserve page — driven by whatever `MotionValue` the caller passes, with a `zoom`
 prop so tighter containers still fill the frame.
 
-`src/components/sections/ScrollStory.tsx` pins a full-screen canvas across 520vh
-and drives `three/StoryScene.tsx` from a single scroll `MotionValue`. Scroll
-progress controls camera dolly and height, rotation, tilt, and an **exploded
-view** built from the model's real part names — `semg_electrode_pad`,
-`imu_sensor_pod`, `gsr_electrode_pad_a/b`, `temperature_sensor_mount` separate
-further than structural parts, so the sensing system reads as an engineering
-reveal rather than scattered geometry.
+`src/components/sections/ScrollStory.tsx` pins a full-screen canvas across 640vh
+and drives `three/StoryScene.tsx` from a single scroll `MotionValue`. The camera
+travels a half-orbit around the still product, shot by shot: lens length,
+framing offset, exposure and a `focus` channel that pulls the aim from the whole
+sleeve onto the sensor module for the close-ups. Mid-story the sensing stack
+lifts off the sleeve in build order — skin-side electrodes (`PTS_sEMG_A/B`,
+`PTS_Ref`, `PTS_GSR_A/B`), then the cradle, then the module with its light bar,
+USB-C port and printed PowerThru mark — and settles back.
 
 Beats: product → placement → sensors → fusion → performance intelligence.
 
 ## 3D pipeline
 
-`models/PowerThru_Assembly_Reveal.blend` (Blender 5.x) is the authored source.
-Browsers cannot load `.blend`, so it is exported to
-`public/models/stryve-wearable.glb` (763 KB, 8.6k verts).
+`models/PowerThru_Sleeve.blend` (Blender 5.x) is the authored source. Browsers
+cannot load `.blend`, so it is exported to `public/models/powerthru-sleeve.glb`
+(~770 KB, Draco-compressed). The export keeps only the render-visible product
+collections (no proxy arm, folded variants, cameras or lights) and replaces the
+268k-face light bar with its convex hull. The Draco decoder is self-hosted in
+`public/draco/`, so the model needs no CDN.
 
 ```bash
 pip install bpy==5.0.1

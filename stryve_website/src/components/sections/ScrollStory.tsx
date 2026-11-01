@@ -10,13 +10,13 @@ const SCENES = [
     at: [0.0, 0.18],
     label: 'The product',
     title: 'Built for movement.',
-    body: 'A single wearable, worn on the working muscle. Lightweight enough to forget, precise enough to matter.',
+    body: 'A compression sleeve with the sensing module built in. Light enough to forget, precise enough to matter.',
   },
   {
     at: [0.22, 0.37],
     label: 'The athlete',
     title: 'Worn where the work happens.',
-    body: 'Positioned on the muscle group under load, STRYVE reads the body at the source rather than inferring it from the wrist.',
+    body: 'The sleeve holds the electrodes against the muscle under load, so STRYVE reads the body at the source rather than inferring it from the wrist.',
   },
   {
     at: [0.41, 0.57],

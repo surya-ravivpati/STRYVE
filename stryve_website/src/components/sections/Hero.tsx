@@ -106,9 +106,11 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.35 }}
           >
-            <div className="relative mx-auto aspect-square w-full max-w-[520px]">
+            {/* The sleeve is long and low, so its frame is wide and bleeds past
+                the column toward the page edge on desktop. */}
+            <div className="relative mx-auto aspect-[5/4] w-full max-w-[560px] lg:-mr-[14%] lg:ml-[-6%] lg:w-[120%] lg:max-w-none">
               <Suspense fallback={<div className="h-full w-full" />}>
-                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.8} />
+                <StoryScene progress={modelProgress} className="h-full w-full" zoom={1.3} />
               </Suspense>
             </div>
           </motion.div>
